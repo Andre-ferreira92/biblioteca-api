@@ -28,6 +28,10 @@ public class BookController {
         List<Book> books = bookService.findAllBooks();
         return ResponseEntity.ok(books);
     }
+    @GetMapping("/available")
+    public ResponseEntity<List<Book>> getAllBooksByStatus() {
+        return ResponseEntity.ok(bookService.findAllBooksByStatus());
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {

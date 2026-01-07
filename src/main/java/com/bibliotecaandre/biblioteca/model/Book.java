@@ -20,5 +20,8 @@ public class Book {
     @Column(nullable = false)
     private String author;
 
+    @Enumerated(EnumType.STRING)
+    private BookStatus status;
+
 }
 
