@@ -17,15 +17,27 @@ public class BookController {
 
     private final BookService bookService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         Book savedBook = bookService.save(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<Book>> getAllBooks() {
         List<Book> books = bookService.findAllBooks();
         return ResponseEntity.ok(books);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+        Book updateBook = bookService.updatebook(id,bookDetails);
+        return ResponseEntity.ok(updateBook);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        bookService.deletebook(id);
+        return ResponseEntity.noContent().build();
     }
 }
