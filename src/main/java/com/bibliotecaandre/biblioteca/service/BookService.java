@@ -19,17 +19,21 @@ public class BookService {
         return bookRepository.findAll();
 
     }
-    public List<Book> findAllBooksByStatus() {
+    public List<Book> findAllAvailableBooks() {
         return bookRepository.findByStatus(BookStatus.AVAILABLE);
     }
 
     public Book save(Book book) {
+        book.setStatus(BookStatus.AVAILABLE);
         return bookRepository.save(book);
     }
 
     public Book updatebook(Long id, Book bookDetails) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id" + id));
+        if(book.getStatus() == BookStatus.LOANED) {
+            throw new RuntimeException("cannot update loaned book");
+        }
         book.setTitle(bookDetails.getTitle());
         book.setAuthor(bookDetails.getAuthor());
         return bookRepository.save(book);
@@ -38,6 +42,9 @@ public class BookService {
     public void deletebook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id" + id));
+        if(book.getStatus() == BookStatus.LOANED) {
+            throw new RuntimeException("cannot delete loaned book");
+        }
         bookRepository.delete(book);
     }
 }

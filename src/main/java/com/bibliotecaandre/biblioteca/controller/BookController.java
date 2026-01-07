@@ -29,8 +29,8 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
     @GetMapping("/available")
-    public ResponseEntity<List<Book>> getAllBooksByStatus() {
-        return ResponseEntity.ok(bookService.findAllBooksByStatus());
+    public ResponseEntity<List<Book>> getAllAvailableBooks() {
+        return ResponseEntity.ok(bookService.findAllAvailableBooks());
     }
 
     @PutMapping("/{id}")
