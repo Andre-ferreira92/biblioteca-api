@@ -18,7 +18,6 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
-    private final BookCopyService bookCopyService;
 
     @GetMapping()
     public ResponseEntity<List<Book>> getAllBooks() {
@@ -26,21 +25,14 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-
-//    @GetMapping("/available")
-//    public ResponseEntity<List<Book>> getAllAvailableBooks() {
-//        return ResponseEntity.ok(bookService.findAllAvailableBooks());
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
-//        Book updateBook = bookService.updatebook(id,bookDetails);
-//        return ResponseEntity.ok(updateBook);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-//        bookService.deletebook(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+        Book updateBook = bookService.updatebook(id,bookDetails);
+        return ResponseEntity.ok(updateBook);
+    }
+    @PostMapping
+    public ResponseEntity<Book> addBook(@RequestBody Book bookDetails) {
+        Book addBook = bookService.addBook(bookDetails);
+        return ResponseEntity.ok(addBook);
+    }
 }
