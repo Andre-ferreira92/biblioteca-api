@@ -19,8 +19,8 @@ public class Loan {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    @JoinColumn(name = "book_copy_id", nullable = false)
+    private BookCopy bookCopy;
 
     @Column(name = "loan_date", nullable = false)
     private LocalDateTime loanDate = LocalDateTime.now();

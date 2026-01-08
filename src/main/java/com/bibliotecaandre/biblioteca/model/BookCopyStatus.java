@@ -1,6 +1,8 @@
 package com.bibliotecaandre.biblioteca.model;
 
-public enum BookStatus {
+public enum BookCopyStatus {
     AVAILABLE,
-    LOANED
+    LOANED,
+    LOST,
+    DAMAGED
 }

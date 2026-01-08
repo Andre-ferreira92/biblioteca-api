@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
+    List<BookCopy> findByStatus(BookCopyStatus status);
+    List<BookCopy> findByBookAndStatus(Book book, BookCopyStatus status);
 }
