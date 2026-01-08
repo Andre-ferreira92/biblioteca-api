@@ -1,6 +1,8 @@
 package com.bibliotecaandre.biblioteca.service;
 
 import com.bibliotecaandre.biblioteca.model.Book;
+import com.bibliotecaandre.biblioteca.model.BookCopy;
+import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import lombok.AllArgsConstructor;
@@ -20,17 +22,33 @@ public class BookService {
         return bookRepository.findAll();
 
     }
-    //update de um livro que esteja disponivel
-    public Book updatebook(Long id, Book bookDetails) {
+    //update de um livro existente
+    public Book updateBook(Long id, Book bookDetails) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id" + id));
+                .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
         book.setTitle(bookDetails.getTitle());
         book.setAuthor(bookDetails.getAuthor());
         return bookRepository.save(book);
     }
-
+    //Insere novo livro
     public Book addBook(Book bookDetails) {
         return bookRepository.save(bookDetails);
 
+    }
+
+    public void deleteBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        // Se houver cópias LOANED,nao pode apagar o título
+        boolean hasActiveLoans = bookCopyRepository.existsByBookIdAndStatus(id, BookCopyStatus.LOANED);
+        if (hasActiveLoans) {
+            throw new RuntimeException("Cannot delete book: There are copies currently loaned to users.");
+        }
+        // Primeiro apagamos as cópias vinculadas a este livro
+        List<BookCopy> copies = bookCopyRepository.findByBookId(id);
+        bookCopyRepository.deleteAll(copies);
+
+        //apagamos o título do catálogo
+        bookRepository.delete(book);
     }
 }

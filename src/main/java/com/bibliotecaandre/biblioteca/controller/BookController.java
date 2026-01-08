@@ -1,8 +1,6 @@
 package com.bibliotecaandre.biblioteca.controller;
 
 import com.bibliotecaandre.biblioteca.model.Book;
-import com.bibliotecaandre.biblioteca.model.BookCopy;
-import com.bibliotecaandre.biblioteca.service.BookCopyService;
 import com.bibliotecaandre.biblioteca.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,12 +25,18 @@ public class BookController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
-        Book updateBook = bookService.updatebook(id,bookDetails);
+        Book updateBook = bookService.updateBook(id,bookDetails);
         return ResponseEntity.ok(updateBook);
     }
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody Book bookDetails) {
         Book addBook = bookService.addBook(bookDetails);
-        return ResponseEntity.ok(addBook);
+        return new ResponseEntity<>(bookDetails, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        bookService.deleteBook(id);
+        return ResponseEntity.noContent().build(); // Retorna 204 (Sucesso, sem conteúdo)
     }
 }

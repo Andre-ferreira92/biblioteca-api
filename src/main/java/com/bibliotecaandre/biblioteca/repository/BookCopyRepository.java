@@ -1,6 +1,4 @@
 package com.bibliotecaandre.biblioteca.repository;
-
-import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +9,6 @@ import java.util.List;
 @Repository
 public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
     List<BookCopy> findByStatus(BookCopyStatus status);
-    List<BookCopy> findByBookAndStatus(Book book, BookCopyStatus status);
+    boolean existsByBookIdAndStatus(Long bookId, BookCopyStatus status);
+    List<BookCopy> findByBookId(Long id);
 }
