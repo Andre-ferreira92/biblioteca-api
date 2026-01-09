@@ -25,4 +25,10 @@ public class Loan {
     @Column(name = "loan_date", nullable = false)
     private LocalDateTime loanDate = LocalDateTime.now();
 
+    @Column(name = "loan_return")
+    private LocalDateTime loanReturn ;
+
+    @Column(name = "loan_due", nullable = false)
+    private LocalDateTime loanDue ;
+
 }

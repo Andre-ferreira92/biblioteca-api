@@ -21,8 +21,4 @@ public class BookCopy {
 
     @Column(nullable = false, unique = true)
     private String inventoryCode;
-
-    @Column(nullable = false, unique = false)
-    private String isbn;
-
 }

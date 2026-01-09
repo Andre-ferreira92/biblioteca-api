@@ -1,6 +1,7 @@
 package com.bibliotecaandre.biblioteca.service;
 
 
+import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
@@ -20,11 +21,11 @@ public class BookCopyService {
         return bookCopyRepository.findByStatus(BookCopyStatus.AVAILABLE);
     }
 
-    public BookCopy save(BookCopy bookCopy) {
-        bookCopy.setStatus(BookCopyStatus.AVAILABLE);
-        return bookCopyRepository.save(bookCopy);
-    }
-
+//    public BookCopy addBookCopies(BookCopy bookCopy,Long id) {
+//        BookCopy copies = bookCopyRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Book not found"));
+//
+//    }
 
 
 //    //Entrada de um novo livro
