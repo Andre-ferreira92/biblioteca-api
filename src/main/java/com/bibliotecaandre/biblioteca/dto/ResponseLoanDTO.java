@@ -1,7 +1,10 @@
 package com.bibliotecaandre.biblioteca.dto;
 
+import java.time.LocalDateTime;
+
 public record ResponseLoanDTO(
+        Long id,
+        String userName,
         String bookTitle,
-        Long bookCopyId,
-        java.time.LocalDate dueDate
+        LocalDateTime dueDate
 ) {}
