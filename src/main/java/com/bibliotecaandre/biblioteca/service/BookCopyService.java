@@ -1,58 +1,39 @@
 package com.bibliotecaandre.biblioteca.service;
 
-
 import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
+import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class BookCopyService {
 
     private final BookCopyRepository bookCopyRepository;
+    private final BookRepository bookRepository;
 
     //lista de todos os livros disponiveis
     public List<BookCopy> findAllAvailableBookCopies() {
         return bookCopyRepository.findByStatus(BookCopyStatus.AVAILABLE);
     }
 
-//    public BookCopy addBookCopies(BookCopy bookCopy,Long id) {
-//        BookCopy copies = bookCopyRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Book not found"));
-//
-//    }
+    public void addBookCopies(Long id, int quantity) {
 
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        for(int i = 0; i < quantity; i++) {
+            BookCopy newCopy = new BookCopy();
 
-//    //Entrada de um novo livro
-//    public Book save(Book book BookCopy bookcopy) {
-//        //coloca o status como available por defeito
-//        book.setStatus(BookCopyStatus.AVAILABLE);
-//        return bookRepository.save(book);
-//    }
-//
-//    //update de um livro que esteja disponivel
-//    public Book updatebook(Long id, Book bookDetails) {
-//        Book book = bookRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Book not found with id" + id));
-//        if(book.getStatus() == BookCopyStatus.LOANED) {
-//            throw new RuntimeException("cannot update loaned book");
-//        }
-//        book.setTitle(bookDetails.getTitle());
-//        book.setAuthor(bookDetails.getAuthor());
-//        return bookRepository.save(book);
-//    }
-//    //delete de um livro que esteja disponivel
-//    public void deletebook(Long id) {
-//        Book book = bookRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Book not found with id" + id));
-//        if(book.getStatus() == BookCopyStatus.LOANED) {
-//            throw new RuntimeException("cannot delete loaned book");
-//        }
-//        bookRepository.delete(book);
-//    }
+            newCopy.setBook(book);
+            newCopy.setStatus(BookCopyStatus.AVAILABLE);
+            newCopy.setInventoryCode(book.getIsbn() + "-" + UUID.randomUUID().toString().substring(0,8));
+            bookCopyRepository.save(newCopy);
+        }
+    }
 }

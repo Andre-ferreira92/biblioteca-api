@@ -17,9 +17,14 @@ public class BookCopyController {
 
     private final BookCopyService bookCopyService;
 
-//    @PostMapping()
-//    public ResponseEntity<BookCopy> addBookCopies(@PathVariable Long id, @RequestBody BookCopy bookCopy) {
-//        BookCopy addBooks = bookCopyService.addBookCopies(bookCopy,id);
-//        return new ResponseEntity<>(addBooks, HttpStatus.CREATED);
-//    }
+    @GetMapping
+    public ResponseEntity<List<BookCopy>> getAllAvailableBookCopies() {
+        List<BookCopy> booksAvailable = bookCopyService.findAllAvailableBookCopies();
+        return ResponseEntity.ok(booksAvailable);
+    }
+    @PostMapping("/{id}/add-copies")
+    public ResponseEntity<Void> addBookCopies(@PathVariable Long id,@RequestParam int quantity) {
+        bookCopyService.addBookCopies(id,quantity);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

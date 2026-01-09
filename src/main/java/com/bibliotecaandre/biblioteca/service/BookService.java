@@ -28,6 +28,7 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
         book.setTitle(bookDetails.getTitle());
         book.setAuthor(bookDetails.getAuthor());
+        book.setIsbn(bookDetails.getIsbn());
         return bookRepository.save(book);
     }
     //Insere novo livro
