@@ -1,5 +1,6 @@
 package com.bibliotecaandre.biblioteca.controller;
 
+import com.bibliotecaandre.biblioteca.dto.ResponseBookCopyDTO;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.service.BookCopyService;
 import lombok.AllArgsConstructor;
@@ -18,9 +19,9 @@ public class BookCopyController {
     private final BookCopyService bookCopyService;
 
     @GetMapping
-    public ResponseEntity<List<BookCopy>> getAllAvailableBookCopies() {
-        List<BookCopy> booksAvailable = bookCopyService.findAllAvailableBookCopies();
-        return ResponseEntity.ok(booksAvailable);
+    public ResponseEntity<List<ResponseBookCopyDTO>> getAllAvailableBookCopies() {
+        List<ResponseBookCopyDTO> booksAvailable = bookCopyService.findAllAvailableBookCopies();
+        return new ResponseEntity<>(booksAvailable, HttpStatus.OK);
     }
     @PostMapping("/{id}/add-copies")
     public ResponseEntity<Void> addBookCopies(@PathVariable Long id,@RequestParam int quantity) {

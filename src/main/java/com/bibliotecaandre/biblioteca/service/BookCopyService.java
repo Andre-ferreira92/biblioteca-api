@@ -1,5 +1,6 @@
 package com.bibliotecaandre.biblioteca.service;
 
+import com.bibliotecaandre.biblioteca.dto.ResponseBookCopyDTO;
 import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
@@ -19,8 +20,18 @@ public class BookCopyService {
     private final BookRepository bookRepository;
 
     //lista de todos os livros disponiveis
-    public List<BookCopy> findAllAvailableBookCopies() {
-        return bookCopyRepository.findByStatus(BookCopyStatus.AVAILABLE);
+    public List<ResponseBookCopyDTO> findAllAvailableBookCopies() {
+        // 1. Procurar as cópias no banco de dados
+        List<BookCopy> copies = bookCopyRepository.findByStatus(BookCopyStatus.AVAILABLE);
+        // 2. Transformar a lista
+        return copies.stream()
+                .map(copy -> new ResponseBookCopyDTO(
+                        copy.getId(),
+                        copy.getInventoryCode(),
+                        copy.getStatus(),
+                        copy.getBook().getTitle()
+                ))
+                .toList();
     }
 
     public void addBookCopies(Long id, int quantity) {
