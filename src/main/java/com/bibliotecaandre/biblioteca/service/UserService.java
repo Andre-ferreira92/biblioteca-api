@@ -8,6 +8,8 @@ import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class UserService {
@@ -22,8 +24,24 @@ public class UserService {
         user.setRole(Roles.USER);
         User savedUser = userRepository.save(user);
          return new ResponseUserDTO(
+                 savedUser.getId(),
+                 savedUser.getEmail(),
                  savedUser.getName(),
-                 savedUser.getEmail()
+                 savedUser.getRole(),
+                 savedUser.getCreatedAt()
          );
+    }
+
+    public List<ResponseUserDTO> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new ResponseUserDTO(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getName(),
+                        user.getRole(),
+                        user.getCreatedAt()
+                ))
+                .toList();
     }
 }
