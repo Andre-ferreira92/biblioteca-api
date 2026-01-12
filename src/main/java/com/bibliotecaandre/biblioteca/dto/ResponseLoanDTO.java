@@ -7,4 +7,5 @@ public record ResponseLoanDTO(
         String userName,
         String bookTitle,
         LocalDateTime dueDate
-) {}
+)
+{}

@@ -37,6 +37,6 @@ public class BookController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
-        return ResponseEntity.noContent().build(); // Retorna 204 (Sucesso, sem conteúdo)
+        return ResponseEntity.noContent().build();
     }
 }

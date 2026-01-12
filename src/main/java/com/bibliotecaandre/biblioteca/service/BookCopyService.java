@@ -19,11 +19,9 @@ public class BookCopyService {
     private final BookCopyRepository bookCopyRepository;
     private final BookRepository bookRepository;
 
-    //lista de todos os livros disponiveis
+
     public List<ResponseBookCopyDTO> findAllAvailableBookCopies() {
-        // 1. Procurar as cópias
         List<BookCopy> copies = bookCopyRepository.findByStatus(BookCopyStatus.AVAILABLE);
-        // 2. Transformar a lista
         return copies.stream()
                 .map(copy -> new ResponseBookCopyDTO(
                         copy.getId(),

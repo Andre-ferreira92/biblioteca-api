@@ -14,51 +14,60 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class LoanService {
 
-    // Todos devem ser FINAL para o Lombok injetar
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
     private final BookCopyRepository bookCopyRepository;
 
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
 
-        // 1. Procurar User
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 2. Procurar Cópia (Agora o Repository devolve o tipo certo: BookCopy)
         BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId())
-                .orElseThrow(() -> new RuntimeException("Book Copy not found"));
+                .orElseThrow(() -> new RuntimeException("Book copy not found"));
 
-        // 3. Validação: A cópia está livre?
         if (bookCopy.getStatus() == BookCopyStatus.LOANED) {
-            throw new RuntimeException("Esta cópia já está emprestada!");
+            throw new RuntimeException("Book not available");
         }
-
-        // 4. Lógica
-        bookCopy.setStatus(BookCopyStatus.LOANED);
 
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setBookCopy(bookCopy);
         loan.setLoanDate(LocalDateTime.now());
-        loan.setLoanDue(LocalDateTime.now().plusDays(14));
+        loan.setLoanDue(LocalDateTime.now().plusDays(30));
+        bookCopy.setStatus(BookCopyStatus.LOANED);
 
-        // 5. Salvar
         loanRepository.save(loan);
         bookCopyRepository.save(bookCopy);
 
-        // 6. Retorno (Garante que os nomes batem com o teu Record ResponseLoanDTO)
-        return new ResponseLoanDTO(
+        ResponseLoanDTO responseLoanDTO = new ResponseLoanDTO(
                 loan.getId(),
-                user.getName(),
-                bookCopy.getBook().getTitle(),
-                loan.getLoanDue()
-        );
+                loan.getUser().getName(),
+                loan.getUser().getEmail(),
+                loan.getLoanDue());
+        return responseLoanDTO;
     }
+
+    public List<ResponseLoanDTO> getAllLoans() {
+        List<Loan> loans = loanRepository.findAll();
+
+        return loans.stream()
+                .map(copy -> new ResponseLoanDTO(
+                        copy.getId(),
+                        copy.getUser().getName(),
+                        copy.getUser().getEmail(),
+                        copy.getLoanDue()
+                ))
+
+                .toList();
+    }
+
 }
+
 
