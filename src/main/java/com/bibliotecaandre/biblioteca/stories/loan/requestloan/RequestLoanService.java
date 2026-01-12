@@ -1,4 +1,4 @@
-package com.bibliotecaandre.biblioteca.service;
+package com.bibliotecaandre.biblioteca.stories.loan.requestloan;
 
 import com.bibliotecaandre.biblioteca.dto.RequestLoanDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseLoanDTO;
@@ -13,13 +13,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class LoanService {
+
+public class RequestLoanService {
 
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
@@ -28,11 +27,9 @@ public class LoanService {
     @Transactional
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
 
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId())
-                .orElseThrow(() -> new RuntimeException("Book copy not found"));
+        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId()).orElseThrow(() -> new RuntimeException("Book copy not found"));
 
         if (bookCopy.getStatus() == BookCopyStatus.LOANED) {
             throw new RuntimeException("Book not available");
@@ -48,27 +45,6 @@ public class LoanService {
         loanRepository.save(loan);
         bookCopyRepository.save(bookCopy);
 
-        return new ResponseLoanDTO(
-                loan.getId(),
-                loan.getUser().getName(),
-                loan.getUser().getEmail(),
-                loan.getLoanDue());
+        return new ResponseLoanDTO(loan.getId(), loan.getUser().getName(), loan.getUser().getEmail(), loan.getLoanDue());
     }
-
-    public List<ResponseLoanDTO> getAllLoans() {
-        List<Loan> loans = loanRepository.findAll();
-
-        return loans.stream()
-                .map(copy -> new ResponseLoanDTO(
-                        copy.getId(),
-                        copy.getUser().getName(),
-                        copy.getUser().getEmail(),
-                        copy.getLoanDue()
-                ))
-
-                .toList();
-    }
-
 }
-
-
