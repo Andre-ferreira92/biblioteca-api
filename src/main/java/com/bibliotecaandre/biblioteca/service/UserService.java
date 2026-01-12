@@ -7,6 +7,7 @@ import com.bibliotecaandre.biblioteca.model.User;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,14 +16,16 @@ import java.util.List;
 public class UserService {
     private UserRepository userRepository;
 
+    @Transactional  //aqui devo usar ? tenho um save mas nao o posso tirar porque ele é que tem o id ou neste caso nao porque o objeto user nao esta a guardar o id ?
     public ResponseUserDTO saveUser(RequestUserDTO dto) {
         User user = new User();
         user.setName(dto.name());
         user.setEmail(dto.email());
         user.setPassword(dto.password());
-
         user.setRole(Roles.USER);
+
         User savedUser = userRepository.save(user);
+
          return new ResponseUserDTO(
                  savedUser.getId(),
                  savedUser.getEmail(),

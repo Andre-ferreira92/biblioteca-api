@@ -5,6 +5,7 @@ import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +24,23 @@ public class BookService {
 
     }
     //update de um livro existente
+    @Transactional
     public Book updateBook(Long id, Book bookDetails) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
         book.setTitle(bookDetails.getTitle());
         book.setAuthor(bookDetails.getAuthor());
         book.setIsbn(bookDetails.getIsbn());
-        return bookRepository.save(book);
+        return book;
     }
+
     //Insere novo livro
     public Book addBook(Book bookDetails) {
         return bookRepository.save(bookDetails);
 
     }
 
+    @Transactional //
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));

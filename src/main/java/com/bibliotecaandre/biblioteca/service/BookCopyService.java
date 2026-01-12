@@ -8,6 +8,7 @@ import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,8 @@ public class BookCopyService {
                 .toList();
     }
 
+    //faz varias coisas aqui ve se o livro existe pelo id e depois adiciona quantidade de copias se fizer transactional aqui garanto que so sao adicionadas todas as copias ao mesmo tempo . ou neste caso preciso de fazer save uma a uma por estar dentro de um for .
+    @Transactional
     public void addBookCopies(Long id, int quantity) {
 
         Book book = bookRepository.findById(id)

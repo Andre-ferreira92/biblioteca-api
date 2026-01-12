@@ -11,6 +11,7 @@ import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class LoanService {
     private final UserRepository userRepository;
     private final BookCopyRepository bookCopyRepository;
 
+    @Transactional
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
 
         User user = userRepository.findById(dto.userId())
@@ -46,12 +48,11 @@ public class LoanService {
         loanRepository.save(loan);
         bookCopyRepository.save(bookCopy);
 
-        ResponseLoanDTO responseLoanDTO = new ResponseLoanDTO(
+        return new ResponseLoanDTO(
                 loan.getId(),
                 loan.getUser().getName(),
                 loan.getUser().getEmail(),
                 loan.getLoanDue());
-        return responseLoanDTO;
     }
 
     public List<ResponseLoanDTO> getAllLoans() {
