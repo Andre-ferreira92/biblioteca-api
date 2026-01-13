@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/copies")
-@Tag(name = "Copias físicas", description = "Gestão de Copias dos livros")
+@Tag(name = "Copies", description = "Gestão de Copias dos livros")
 @AllArgsConstructor
 public class GetAllCopiesController {
 

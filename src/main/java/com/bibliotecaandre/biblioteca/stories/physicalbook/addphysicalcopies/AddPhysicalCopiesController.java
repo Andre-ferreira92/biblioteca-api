@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/copies")
-@Tag(name = "Copias físicas", description = "Gestão de Copias dos livros")
+@Tag(name = "Copies", description = "Gestão de Copias dos livros")
 @RestController
 @AllArgsConstructor
 public class AddPhysicalCopiesController {

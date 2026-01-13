@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/loan")
-@Tag(name = "Empréstimos de livro", description = "Gestão dos empréstimos de livros")
+@Tag(name = "Loan", description = "Gestão dos empréstimos de livros")
 public class RequestLoanController {
 
         private final RequestLoanService requestLoanService;
