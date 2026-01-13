@@ -1,5 +1,6 @@
 package com.bibliotecaandre.biblioteca.stories.loan.returnloan;
 
+import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
@@ -19,7 +20,7 @@ public class ReturnLoanService {
     public void returnLoan(Long id) {
 
         //Encontrar id do loan
-        Loan loan = loanRepository.findById(id).orElseThrow(() -> new RuntimeException("Loan not found"));
+        Loan loan = loanRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
         //alterar estado do loan e add data de retorno
         loan.setLoanReturn(LocalDateTime.now());

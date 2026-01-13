@@ -2,6 +2,8 @@ package com.bibliotecaandre.biblioteca.stories.loan.requestloan;
 
 import com.bibliotecaandre.biblioteca.dto.RequestLoanDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseLoanDTO;
+import com.bibliotecaandre.biblioteca.exceptions.BusinessRuleException;
+import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
@@ -27,12 +29,12 @@ public class RequestLoanService {
     @Transactional
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
 
-        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(dto.userId()).orElseThrow(ResourceNotFoundException::new);
 
-        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId()).orElseThrow(() -> new RuntimeException("Book copy not found"));
+        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId()).orElseThrow(ResourceNotFoundException::new);
 
         if (bookCopy.getStatus() == BookCopyStatus.LOANED) {
-            throw new RuntimeException("Book not available");
+            throw new BusinessRuleException("Sem cópias disponíveis");
         }
 
         Loan loan = new Loan();

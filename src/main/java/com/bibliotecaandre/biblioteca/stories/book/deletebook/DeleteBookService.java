@@ -1,5 +1,7 @@
 package com.bibliotecaandre.biblioteca.stories.book.deletebook;
 
+import com.bibliotecaandre.biblioteca.exceptions.BusinessRuleException;
+import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
@@ -21,12 +23,12 @@ public class DeleteBookService {
     @Transactional
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(ResourceNotFoundException::new);
 
         // Se houver cópias LOANED,nao pode apagar o título
         boolean hasActiveLoans = bookCopyRepository.existsByBookIdAndStatus(id, BookCopyStatus.LOANED);
         if (hasActiveLoans) {
-            throw new RuntimeException("Cannot delete book: There are copies currently loaned to users.");
+            throw new BusinessRuleException("Não é possível apagar o livro porque existem cópias emprestadas.");
         }
         // Primeiro apagamos as cópias vinculadas a este livro
         List<BookCopy> copies = bookCopyRepository.findByBookId(id);

@@ -1,5 +1,6 @@
 package com.bibliotecaandre.biblioteca.stories.physicalbook.addphysicalcopies;
 
+import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.model.BookCopy;
 import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
@@ -22,7 +23,7 @@ public class AddPhysicalCopiesService {
     public void addBookCopies(Long id, int quantity) {
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(ResourceNotFoundException::new);
         for (int i = 0; i < quantity; i++) {
             BookCopy newCopy = new BookCopy();
 

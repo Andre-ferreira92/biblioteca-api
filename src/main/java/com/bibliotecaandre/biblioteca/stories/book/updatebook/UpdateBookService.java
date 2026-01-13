@@ -1,5 +1,6 @@
 package com.bibliotecaandre.biblioteca.stories.book.updatebook;
 
+import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.Book;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class UpdateBookService {
         @Transactional
         public Book updateBook(Long id, Book bookDetails) {
             Book book = bookRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
+                    .orElseThrow(ResourceNotFoundException::new);
             book.setTitle(bookDetails.getTitle());
             book.setAuthor(bookDetails.getAuthor());
             book.setIsbn(bookDetails.getIsbn());
