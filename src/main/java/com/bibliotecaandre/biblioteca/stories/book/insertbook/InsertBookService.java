@@ -14,6 +14,9 @@ public class InsertBookService {
 
     @Transactional
     public Book createBook(Book bookDetails) {
+        if (bookRepository.existsByIsbn(bookDetails.getIsbn())) {
+            throw new RuntimeException("ISBN já cadastrado!");
+        }
         return bookRepository.save(bookDetails);
 
     }
