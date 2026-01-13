@@ -2,10 +2,13 @@ package com.bibliotecaandre.biblioteca.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "loans")
 public class Loan {
@@ -30,5 +33,18 @@ public class Loan {
 
     @Column(name = "loan_due", nullable = false)
     private LocalDateTime loanDue ;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Loan loan = (Loan) o; // <--- Aqui dizes que o "o" é um Book
+        return id != null && id.equals(loan.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }

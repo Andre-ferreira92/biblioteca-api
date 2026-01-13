@@ -6,4 +6,5 @@ public record ResponseBookCopyDTO(
         Long id,
         String inventoryCode,
         BookCopyStatus status,
-        String bookTitle) { }
+        String bookTitle)
+{ }
