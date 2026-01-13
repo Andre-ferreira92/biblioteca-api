@@ -45,6 +45,12 @@ public class RequestLoanService {
         loanRepository.save(loan);
         bookCopyRepository.save(bookCopy);
 
-        return new ResponseLoanDTO(loan.getId(), loan.getUser().getName(), loan.getUser().getEmail(), loan.getLoanDue());
+        return new ResponseLoanDTO(
+                loan.getId(),
+                loan.getUser().getName(),
+                loan.getBookCopy().getBook().getTitle(),
+                loan.getLoanDue(),
+                loan.getLoanReturn(),
+                (loan.getLoanReturn() == null) ? "ATIVO" : "ENTREGUE");
     }
 }

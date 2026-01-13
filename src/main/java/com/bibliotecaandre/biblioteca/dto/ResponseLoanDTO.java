@@ -6,6 +6,8 @@ public record ResponseLoanDTO(
         Long id,
         String userName,
         String bookTitle,
-        LocalDateTime dueDate
+        LocalDateTime dueDate,
+        LocalDateTime returnDate,
+        String Status
 )
 {}

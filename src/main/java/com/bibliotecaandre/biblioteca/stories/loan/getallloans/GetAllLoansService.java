@@ -21,8 +21,10 @@ public class GetAllLoansService {
                 .map(copy -> new ResponseLoanDTO(
                         copy.getId(),
                         copy.getUser().getName(),
-                        copy.getUser().getEmail(),
-                        copy.getLoanDue()
+                        copy.getBookCopy().getBook().getTitle(),
+                        copy.getLoanDue(),
+                        copy.getLoanReturn(),
+                        (copy.getLoanReturn() == null) ? "ATIVO" : "ENTREGUE"
                 ))
 
                 .toList();
