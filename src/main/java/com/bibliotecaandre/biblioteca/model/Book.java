@@ -3,11 +3,13 @@ package com.bibliotecaandre.biblioteca.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "books")
 public class Book {
@@ -26,6 +28,10 @@ public class Book {
     @Column(nullable = false, unique = false)
     private String isbn;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -38,7 +44,5 @@ public class Book {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-
 }
 

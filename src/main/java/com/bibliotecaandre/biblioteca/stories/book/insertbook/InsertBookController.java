@@ -1,5 +1,7 @@
 package com.bibliotecaandre.biblioteca.stories.book.insertbook;
 
+import com.bibliotecaandre.biblioteca.dto.BookRequestDTO;
+import com.bibliotecaandre.biblioteca.dto.BookResponseDTO;
 import com.bibliotecaandre.biblioteca.model.Book;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,8 +20,8 @@ public class InsertBookController {
     InsertBookService insertBookService;
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book bookDetails) {
-        Book createdBook = insertBookService.createBook(bookDetails);
+    public ResponseEntity<BookResponseDTO> createBook(@RequestBody BookRequestDTO bookDetails) {
+        BookResponseDTO createdBook = insertBookService.createBook(bookDetails);
         return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
     }
 }
