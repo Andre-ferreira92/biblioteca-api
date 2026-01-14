@@ -1,6 +1,6 @@
 package com.bibliotecaandre.biblioteca.stories.book.getbook;
 
-import com.bibliotecaandre.biblioteca.model.Book;
+import com.bibliotecaandre.biblioteca.dto.ResponseBookDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class GetAllBooksController {
     private final GetAllBooksService getAllBooksService;
 
     @GetMapping()
-    public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> books = getAllBooksService.findAllBooks();
+    public ResponseEntity<List<ResponseBookDTO>> getAllBooks() {
+        List<ResponseBookDTO> books = getAllBooksService.findAllBooks();
         return ResponseEntity.ok(books);
     }
 }

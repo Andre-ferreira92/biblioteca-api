@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class GetAllCopiesService {
+public class GetAllAvailableCopiesService {
 
     private final BookCopyRepository bookCopyRepository;
 

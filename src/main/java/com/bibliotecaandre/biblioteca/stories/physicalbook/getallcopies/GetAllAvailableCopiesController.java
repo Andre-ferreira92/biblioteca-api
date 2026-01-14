@@ -14,9 +14,9 @@ import java.util.List;
 @RequestMapping("/copies")
 @Tag(name = "Copies", description = "Gestão de Copias dos livros")
 @AllArgsConstructor
-public class GetAllCopiesController {
+public class GetAllAvailableCopiesController {
 
-    private final GetAllCopiesService getAllCopiesService;
+    private final GetAllAvailableCopiesService getAllCopiesService;
 
     @GetMapping
     public ResponseEntity<List<ResponseBookCopyDTO>> getAllAvailableBookCopies() {

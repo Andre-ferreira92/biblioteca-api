@@ -1,5 +1,7 @@
 package com.bibliotecaandre.biblioteca.stories.book.updatebook;
 
+import com.bibliotecaandre.biblioteca.dto.RequestBookDTO;
+import com.bibliotecaandre.biblioteca.dto.ResponseBookDTO;
 import com.bibliotecaandre.biblioteca.model.Book;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -15,8 +17,8 @@ public class UpdateBookController {
     private UpdateBookService updateBookService;
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
-        Book updateBook = updateBookService.updateBook(id,bookDetails);
+    public ResponseEntity<ResponseBookDTO> updateBook(@PathVariable Long id, @RequestBody RequestBookDTO dto) {
+        ResponseBookDTO updateBook = updateBookService.updateBook(id,dto);
         return ResponseEntity.ok(updateBook);
     }
 }
