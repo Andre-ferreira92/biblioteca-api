@@ -1,10 +1,8 @@
 package com.bibliotecaandre.biblioteca.dto;
 
-public record ResponseBookDTO(
-        Long id,
+public record RequestUpdateBookDTO(
         String title,
         String author,
-        String isbn,
-        String categoryId
+        Long categoryId
 )
 { }

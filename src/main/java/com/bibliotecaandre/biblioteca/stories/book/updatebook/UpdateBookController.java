@@ -1,6 +1,7 @@
 package com.bibliotecaandre.biblioteca.stories.book.updatebook;
 
 import com.bibliotecaandre.biblioteca.dto.RequestBookDTO;
+import com.bibliotecaandre.biblioteca.dto.RequestUpdateBookDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseBookDTO;
 import com.bibliotecaandre.biblioteca.model.Book;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +18,7 @@ public class UpdateBookController {
     private UpdateBookService updateBookService;
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseBookDTO> updateBook(@PathVariable Long id, @RequestBody RequestBookDTO dto) {
+    public ResponseEntity<ResponseBookDTO> updateBook(@PathVariable Long id, @RequestBody RequestUpdateBookDTO dto) {
         ResponseBookDTO updateBook = updateBookService.updateBook(id,dto);
         return ResponseEntity.ok(updateBook);
     }

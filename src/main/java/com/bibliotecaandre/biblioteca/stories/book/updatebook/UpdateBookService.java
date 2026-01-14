@@ -1,6 +1,7 @@
 package com.bibliotecaandre.biblioteca.stories.book.updatebook;
 
 import com.bibliotecaandre.biblioteca.dto.RequestBookDTO;
+import com.bibliotecaandre.biblioteca.dto.RequestUpdateBookDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseBookDTO;
 import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.Book;
@@ -20,7 +21,7 @@ public class UpdateBookService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public ResponseBookDTO updateBook(Long id, RequestBookDTO dto) {
+    public ResponseBookDTO updateBook(Long id, RequestUpdateBookDTO dto) {
         //Fazer alterações para gravar na DB
         Book book = bookRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
@@ -41,7 +42,7 @@ public class UpdateBookService {
                 updatedBook.getTitle(),
                 updatedBook.getAuthor(),
                 updatedBook.getIsbn(),
-                updatedBook.getCategory().getName() != null ? updatedBook.getCategory().getName() : "Sem Categoria"
+                updatedBook.getCategory().getName()
         );
     }
 }
