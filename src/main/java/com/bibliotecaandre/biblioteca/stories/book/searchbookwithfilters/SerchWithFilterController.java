@@ -1,4 +1,4 @@
-package com.bibliotecaandre.biblioteca.stories.book.getbook;
+package com.bibliotecaandre.biblioteca.stories.book.searchbookwithfilters;
 
 import com.bibliotecaandre.biblioteca.dto.ResponseBookDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @Tag(name = "Books", description = "Gestão do catálogo de livros")
 @RequestMapping("/books")
-public class GetAllBooksController {
+public class SerchWithFilterController {
 
-    private final GetAllBooksService getAllBooksService;
+    private final SerchWithFilterService getAllBooksService;
 
     @GetMapping()
     public ResponseEntity<List<ResponseBookDTO>> getAllBooks(@RequestParam(required = false) Long categoryId) {

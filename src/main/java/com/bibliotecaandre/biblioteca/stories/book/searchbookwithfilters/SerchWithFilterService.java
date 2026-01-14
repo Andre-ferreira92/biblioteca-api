@@ -1,4 +1,4 @@
-package com.bibliotecaandre.biblioteca.stories.book.getbook;
+package com.bibliotecaandre.biblioteca.stories.book.searchbookwithfilters;
 
 import com.bibliotecaandre.biblioteca.dto.ResponseBookDTO;
 import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class GetAllBooksService {
+public class SerchWithFilterService {
 
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
