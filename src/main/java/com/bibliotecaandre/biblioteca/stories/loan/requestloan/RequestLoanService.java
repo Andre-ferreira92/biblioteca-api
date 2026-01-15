@@ -9,6 +9,7 @@ import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.model.User;
 import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
+import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,14 +30,32 @@ public class RequestLoanService {
     @Transactional
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
 
-        User user = userRepository.findById(dto.userId()).orElseThrow(ResourceNotFoundException::new);
+        User user = userRepository.findById(dto.userId())
+                .orElseThrow(ResourceNotFoundException::new);
 
-        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId()).orElseThrow(ResourceNotFoundException::new);
+        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        //Verifica se user quer requesitar o mesmo livro 2x
+        Long bookId = bookCopy.getBook().getId();
+        boolean hasSameBook = loanRepository.existsByUserIdAndBookCopyBookIdAndLoanReturnIsNull(dto.userId(), bookId);
+        if (hasSameBook) {
+            throw new BusinessRuleException("O utilizador ja requesitou este livro");
+        }
+
+        //Verifica se user pode ter mais emprestimos
+        int activeLoan = loanRepository.countByUserIdAndLoanReturnIsNull(dto.userId());
+        if (activeLoan >= 3) {
+            throw new BusinessRuleException("O utilizador já tem 3 empréstimos");
+        }
+
+
 
         if (bookCopy.getStatus() == BookCopyStatus.LOANED) {
             throw new BusinessRuleException("Sem cópias disponíveis");
         }
 
+        //cria empréstimo
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setBookCopy(bookCopy);
@@ -47,6 +66,7 @@ public class RequestLoanService {
         loanRepository.save(loan);
         bookCopyRepository.save(bookCopy);
 
+        //Devolve na DTO
         return new ResponseLoanDTO(
                 loan.getId(),
                 loan.getUser().getName(),

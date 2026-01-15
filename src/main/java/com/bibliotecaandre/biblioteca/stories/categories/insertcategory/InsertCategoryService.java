@@ -7,6 +7,7 @@ import com.bibliotecaandre.biblioteca.model.Category;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -14,6 +15,7 @@ public class InsertCategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public ResponseCategoryDTO insertCategory(RequestCategoryDTO dto) {
         // 1. Validar se o nome já existe
         if (categoryRepository.existsByNameIgnoreCase(dto.name())) {

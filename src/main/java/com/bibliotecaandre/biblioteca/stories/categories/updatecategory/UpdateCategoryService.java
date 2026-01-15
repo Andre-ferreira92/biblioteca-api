@@ -9,6 +9,7 @@ import com.bibliotecaandre.biblioteca.model.Category;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -16,6 +17,7 @@ public class UpdateCategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public ResponseCategoryDTO updateCategory(Long id, RequestCategoryDTO dto) {
 
         Category category = categoryRepository.findById(id)
@@ -27,6 +29,7 @@ public class UpdateCategoryService {
             }
         }
         category.setName(dto.name());
+
         categoryRepository.save(category);
 
         return new ResponseCategoryDTO(
