@@ -9,7 +9,6 @@ import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.model.User;
 import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
-import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -32,6 +31,10 @@ public class RequestLoanService {
 
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(ResourceNotFoundException::new);
+
+        if (user.getBlockedUntil() != null && user.getBlockedUntil().isAfter(LocalDateTime.now())) {
+            throw new BusinessRuleException("Pedido negado. O utilizador está suspenso até: " + user.getBlockedUntil());
+        }
 
         BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId())
                 .orElseThrow(ResourceNotFoundException::new);
