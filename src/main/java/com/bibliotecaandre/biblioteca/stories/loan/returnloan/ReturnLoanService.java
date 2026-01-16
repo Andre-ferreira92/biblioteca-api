@@ -1,7 +1,7 @@
 package com.bibliotecaandre.biblioteca.stories.loan.returnloan;
 
 import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
-import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
+import com.bibliotecaandre.biblioteca.model.PhysicalBookStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class ReturnLoanService {
 
         //alterar estado do loan e add data de retorno
         loan.setLoanReturn(LocalDateTime.now());
-        loan.getBookCopy().setStatus(BookCopyStatus.AVAILABLE);
+        loan.getPhysicalBook().setStatus(PhysicalBookStatus.AVAILABLE);
 
         //Verificar se user tem atrasos e se tiver aplicar bloqueio
         List<Loan> historicLoans = loanRepository.findByUserIdAndLoanReturnIsNotNull(loan.getUser().getId());

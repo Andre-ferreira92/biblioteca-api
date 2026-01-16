@@ -3,6 +3,7 @@ package com.bibliotecaandre.biblioteca.stories.loan.requestloan;
 import com.bibliotecaandre.biblioteca.dto.RequestLoanDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseLoanDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class RequestLoanController {
         private final RequestLoanService requestLoanService;
 
         @PostMapping
-        public ResponseEntity<ResponseLoanDTO> requestLoan(@RequestBody RequestLoanDTO requestLoanDTO) {
+        public ResponseEntity<ResponseLoanDTO> requestLoan(@Valid @RequestBody RequestLoanDTO requestLoanDTO) {
             ResponseLoanDTO responseLoanDTO = requestLoanService.createLoan(requestLoanDTO);
             return ResponseEntity.ok(responseLoanDTO);
         }

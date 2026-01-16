@@ -5,6 +5,7 @@ import com.bibliotecaandre.biblioteca.dto.RequestCategoryDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseCategoryDTO;
 import com.bibliotecaandre.biblioteca.model.Category;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class InsertCategoryController {
     private final InsertCategoryService insertCategoryService;
 
     @PostMapping
-    public ResponseEntity<ResponseCategoryDTO> insertCategory(@RequestBody RequestCategoryDTO dto) {
+    public ResponseEntity<ResponseCategoryDTO> insertCategory(@Valid @RequestBody RequestCategoryDTO dto) {
         ResponseCategoryDTO responseCategoryDTO = insertCategoryService.insertCategory(dto);
         return new ResponseEntity<>(responseCategoryDTO, HttpStatus.CREATED);
     }

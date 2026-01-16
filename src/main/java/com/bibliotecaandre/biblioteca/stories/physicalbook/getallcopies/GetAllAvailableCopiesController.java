@@ -1,6 +1,6 @@
 package com.bibliotecaandre.biblioteca.stories.physicalbook.getallcopies;
 
-import com.bibliotecaandre.biblioteca.dto.ResponseBookCopyDTO;
+import com.bibliotecaandre.biblioteca.dto.ResponsePhysicalBookDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class GetAllAvailableCopiesController {
     private final GetAllAvailableCopiesService getAllCopiesService;
 
     @GetMapping
-    public ResponseEntity<List<ResponseBookCopyDTO>> getAllAvailableBookCopies() {
-        List<ResponseBookCopyDTO> booksAvailable = getAllCopiesService.findAllAvailableBookCopies();
+    public ResponseEntity<List<ResponsePhysicalBookDTO>> getAllAvailableBookCopies() {
+        List<ResponsePhysicalBookDTO> booksAvailable = getAllCopiesService.findAllAvailableBookCopies();
         return new ResponseEntity<>(booksAvailable, HttpStatus.OK);
     }
 }

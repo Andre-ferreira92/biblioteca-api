@@ -1,9 +1,9 @@
 package com.bibliotecaandre.biblioteca.stories.physicalbook.getallcopies;
 
-import com.bibliotecaandre.biblioteca.dto.ResponseBookCopyDTO;
-import com.bibliotecaandre.biblioteca.model.BookCopy;
-import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
-import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
+import com.bibliotecaandre.biblioteca.dto.ResponsePhysicalBookDTO;
+import com.bibliotecaandre.biblioteca.model.PhysicalBook;
+import com.bibliotecaandre.biblioteca.model.PhysicalBookStatus;
+import com.bibliotecaandre.biblioteca.repository.PhysicalBookRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 public class GetAllAvailableCopiesService {
 
-    private final BookCopyRepository bookCopyRepository;
+    private final PhysicalBookRepository physicalBookRepository;
 
-    public List<ResponseBookCopyDTO> findAllAvailableBookCopies() {
-        List<BookCopy> copies = bookCopyRepository.findByStatus(BookCopyStatus.AVAILABLE);
+    public List<ResponsePhysicalBookDTO> findAllAvailableBookCopies() {
+        List<PhysicalBook> copies = physicalBookRepository.findByStatus(PhysicalBookStatus.AVAILABLE);
         return copies.stream()
-                .map(copy -> new ResponseBookCopyDTO(
+                .map(copy -> new ResponsePhysicalBookDTO(
                         copy.getId(),
                         copy.getInventoryCode(),
                         copy.getStatus(),

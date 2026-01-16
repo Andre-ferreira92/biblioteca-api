@@ -4,11 +4,11 @@ import com.bibliotecaandre.biblioteca.dto.RequestLoanDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseLoanDTO;
 import com.bibliotecaandre.biblioteca.exceptions.BusinessRuleException;
 import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
-import com.bibliotecaandre.biblioteca.model.BookCopy;
-import com.bibliotecaandre.biblioteca.model.BookCopyStatus;
+import com.bibliotecaandre.biblioteca.model.PhysicalBook;
+import com.bibliotecaandre.biblioteca.model.PhysicalBookStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.model.User;
-import com.bibliotecaandre.biblioteca.repository.BookCopyRepository;
+import com.bibliotecaandre.biblioteca.repository.PhysicalBookRepository;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ public class RequestLoanService {
 
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
-    private final BookCopyRepository bookCopyRepository;
+    private final PhysicalBookRepository physicalBookRepository;
 
     @Transactional
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
@@ -36,11 +36,11 @@ public class RequestLoanService {
             throw new BusinessRuleException("Pedido negado. O utilizador está suspenso até: " + user.getBlockedUntil());
         }
 
-        BookCopy bookCopy = bookCopyRepository.findById(dto.bookCopyId())
+        PhysicalBook physicalBook = physicalBookRepository.findById(dto.bookCopyId())
                 .orElseThrow(ResourceNotFoundException::new);
 
         //Verifica se user quer requesitar o mesmo livro 2x
-        Long bookId = bookCopy.getBook().getId();
+        Long bookId = physicalBook.getBook().getId();
         boolean hasSameBook = loanRepository.existsByUserIdAndBookCopyBookIdAndLoanReturnIsNull(dto.userId(), bookId);
         if (hasSameBook) {
             throw new BusinessRuleException("O utilizador ja requesitou este livro");
@@ -54,26 +54,26 @@ public class RequestLoanService {
 
 
 
-        if (bookCopy.getStatus() == BookCopyStatus.LOANED) {
+        if (physicalBook.getStatus() == PhysicalBookStatus.LOANED) {
             throw new BusinessRuleException("Sem cópias disponíveis");
         }
 
         //cria empréstimo
         Loan loan = new Loan();
         loan.setUser(user);
-        loan.setBookCopy(bookCopy);
+        loan.setPhysicalBook(physicalBook);
         loan.setLoanDate(LocalDateTime.now());
         loan.setLoanDue(LocalDateTime.now().plusDays(30));
-        bookCopy.setStatus(BookCopyStatus.LOANED);
+        physicalBook.setStatus(PhysicalBookStatus.LOANED);
 
         loanRepository.save(loan);
-        bookCopyRepository.save(bookCopy);
+        physicalBookRepository.save(physicalBook);
 
         //Devolve na DTO
         return new ResponseLoanDTO(
                 loan.getId(),
                 loan.getUser().getName(),
-                loan.getBookCopy().getBook().getTitle(),
+                loan.getPhysicalBook().getBook().getTitle(),
                 loan.getLoanDue(),
                 loan.getLoanReturn(),
                 (loan.getLoanReturn() == null) ? "ATIVO" : "ENTREGUE");

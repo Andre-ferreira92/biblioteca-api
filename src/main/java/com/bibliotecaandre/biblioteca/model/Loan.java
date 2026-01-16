@@ -1,7 +1,6 @@
 package com.bibliotecaandre.biblioteca.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +24,7 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "book_copy_id", nullable = false)
-    private BookCopy bookCopy;
+    private PhysicalBook physicalBook;
 
     @Column(name = "loan_date", nullable = false)
     private LocalDateTime loanDate = LocalDateTime.now();

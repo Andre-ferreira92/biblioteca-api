@@ -1,7 +1,6 @@
 package com.bibliotecaandre.biblioteca.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "book_copies")
-public class BookCopy {
+public class PhysicalBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +21,7 @@ public class BookCopy {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private BookCopyStatus status;
+    private PhysicalBookStatus status;
 
     @Column(nullable = false, unique = true)
     private String inventoryCode;
@@ -31,8 +30,8 @@ public class BookCopy {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BookCopy bookCopy = (BookCopy) o; // <--- Aqui dizes que o "o" é um Book
-        return id != null && id.equals(bookCopy.id);
+        PhysicalBook physicalBook = (PhysicalBook) o; // <--- Aqui dizes que o "o" é um Book
+        return id != null && id.equals(physicalBook.id);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.bibliotecaandre.biblioteca.stories.users.createusers;
 import com.bibliotecaandre.biblioteca.dto.RequestUserDTO;
 import com.bibliotecaandre.biblioteca.dto.ResponseUserDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class CreateUserController {
     private final CreateUserService userService;
 
     @PostMapping
-    public ResponseEntity<ResponseUserDTO> createUser(@RequestBody RequestUserDTO dto){
+    public ResponseEntity<ResponseUserDTO> createUser(@Valid @RequestBody RequestUserDTO dto){
         ResponseUserDTO user = userService.createUser(dto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }

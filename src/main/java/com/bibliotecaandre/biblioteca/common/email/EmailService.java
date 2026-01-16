@@ -14,8 +14,8 @@ import java.util.List;
 public class EmailService {
 
     private final LoanRepository loanRepository;
-
-    @Scheduled(cron = "0 0 9 * * *")
+    //cron - 0 0 9 * * * --> para envio diario as 9h
+    @Scheduled(cron = "0 * * * * *")
     public void checkLateLoans() {
 
         List<Loan> activeLoans = loanRepository.findByLoanReturnIsNull();
@@ -27,7 +27,7 @@ public class EmailService {
                 .toList();
 
         lateLoans.forEach(loan -> {
-            System.out.println("AVISO: O utilizador " + loan.getUser().getName() + "está atrasado a devolver o livro " + loan.getBookCopy().getBook().getTitle());
+            System.out.println("AVISO: O utilizador " + loan.getUser().getName() + " está atrasado a devolver o livro " + loan.getPhysicalBook().getBook().getTitle());
         });
     }
 }
