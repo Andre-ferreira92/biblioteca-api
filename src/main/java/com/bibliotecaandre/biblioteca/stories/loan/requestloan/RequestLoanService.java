@@ -36,12 +36,12 @@ public class RequestLoanService {
             throw new BusinessRuleException("Pedido negado. O utilizador está suspenso até: " + user.getBlockedUntil());
         }
 
-        PhysicalBook physicalBook = physicalBookRepository.findById(dto.bookCopyId())
+        PhysicalBook physicalBook = physicalBookRepository.findById(dto.physicalBookId())
                 .orElseThrow(ResourceNotFoundException::new);
 
         //Verifica se user quer requesitar o mesmo livro 2x
         Long bookId = physicalBook.getBook().getId();
-        boolean hasSameBook = loanRepository.existsByUserIdAndBookCopyBookIdAndLoanReturnIsNull(dto.userId(), bookId);
+        boolean hasSameBook = loanRepository.existsByUserIdAndPhysicalBookIdAndLoanReturnIsNull(dto.userId(), bookId);
         if (hasSameBook) {
             throw new BusinessRuleException("O utilizador ja requesitou este livro");
         }

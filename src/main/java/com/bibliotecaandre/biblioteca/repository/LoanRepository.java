@@ -10,7 +10,7 @@ import java.util.ListResourceBundle;
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     int countByUserIdAndLoanReturnIsNull(Long userId);
-    boolean existsByUserIdAndBookCopyBookIdAndLoanReturnIsNull(Long userId, Long bookId);
+    boolean existsByUserIdAndPhysicalBookIdAndLoanReturnIsNull(Long userId, Long bookId);
     List<Loan> findByUserIdAndLoanReturnIsNotNull(Long userId);
     List<Loan> findByLoanReturnIsNull();
 }
