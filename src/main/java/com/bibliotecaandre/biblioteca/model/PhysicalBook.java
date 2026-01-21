@@ -30,7 +30,7 @@ public class PhysicalBook {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PhysicalBook physicalBook = (PhysicalBook) o; // <--- Aqui dizes que o "o" é um Book
+        PhysicalBook physicalBook = (PhysicalBook) o;
         return id != null && id.equals(physicalBook.id);
     }
 

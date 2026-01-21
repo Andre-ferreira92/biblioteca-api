@@ -9,11 +9,13 @@ import com.bibliotecaandre.biblioteca.model.Category;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class InsertBookService {
 
     private final BookRepository bookRepository;
@@ -21,8 +23,9 @@ public class InsertBookService {
 
     @Transactional
     public ResponseBookDTO createBook(RequestBookDTO dto) {
-        // 1. Validação de Regra de Negócio
+        log.info("A criar um novo livro no catelogo da biblioteca");
         if (bookRepository.existsByIsbn(dto.isbn())) {
+            log.warn("Este isbn ja existe {}", dto.isbn());
             throw new IsbnAlreadyExistsException();
         }
 
@@ -34,11 +37,9 @@ public class InsertBookService {
         book.setAuthor(dto.author());
         book.setIsbn(dto.isbn());
         book.setCategory(category);
-        // 2. Persistência (GUARDAR PRIMEIRO)
-        // O save retorna o objeto "book" já com o ID gerado pela BD
-        Book savedBook = bookRepository.save(book);
 
-        // 3. Transformação para DTO e Retorno
+        Book savedBook = bookRepository.save(book);
+        log.info("Novo livro criado com sucesso: ID {} - Título: {}", savedBook.getId(), savedBook.getTitle());
         return new ResponseBookDTO(
                 savedBook.getId(),
                 savedBook.getTitle(),

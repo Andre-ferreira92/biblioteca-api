@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @Tag(name = "Books", description = "Gestão do catálogo de livros")
 @RequestMapping("/books")
-public class SerchWithFilterController {
+public class SearchWithFilterController {
 
-    private final SerchWithFilterService getAllBooksService;
+    private final SearchWithFilterService getAllBooksService;
 
     @GetMapping()
     public ResponseEntity<List<ResponseBookDTO>> getAllBooks(@RequestParam(required = false) Long categoryId) {

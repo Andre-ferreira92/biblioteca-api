@@ -12,6 +12,7 @@ import com.bibliotecaandre.biblioteca.repository.PhysicalBookRepository;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
-
+@Slf4j
 public class RequestLoanService {
 
     private final LoanRepository loanRepository;
@@ -28,11 +29,14 @@ public class RequestLoanService {
 
     @Transactional
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
-
+        log.info("Iniciando requisição de livro. UserID: {}, PhysicalBookID: {}", dto.userId(), dto.physicalBookId());
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(ResourceNotFoundException::new);
 
+
+        // Impede o empréstimo se o utilizador ainda estiver dentro do período de suspensão
         if (user.getBlockedUntil() != null && user.getBlockedUntil().isAfter(LocalDateTime.now())) {
+            log.warn("Pedido negado: Utilizador {} suspenso até {}", user.getId(), user.getBlockedUntil());
             throw new BusinessRuleException("Pedido negado. O utilizador está suspenso até: " + user.getBlockedUntil());
         }
 
@@ -41,7 +45,7 @@ public class RequestLoanService {
 
         //Verifica se user quer requesitar o mesmo livro 2x
         Long bookId = physicalBook.getBook().getId();
-        boolean hasSameBook = loanRepository.existsByUserIdAndPhysicalBookIdAndLoanReturnIsNull(dto.userId(), bookId);
+        boolean hasSameBook = loanRepository.existsByUserIdAndPhysicalBookIdAndLoanReturnIsNull(dto.userId(),physicalBook.getBook().getId());
         if (hasSameBook) {
             throw new BusinessRuleException("O utilizador ja requesitou este livro");
         }
@@ -49,16 +53,16 @@ public class RequestLoanService {
         //Verifica se user pode ter mais emprestimos
         int activeLoan = loanRepository.countByUserIdAndLoanReturnIsNull(dto.userId());
         if (activeLoan >= 3) {
+            log.warn("Limite atingido: Utilizador {} já possui {} empréstimos ativos", user.getId(), activeLoan);
             throw new BusinessRuleException("O utilizador já tem 3 empréstimos");
         }
 
-
-
+        //Muda o Status para LOANED
         if (physicalBook.getStatus() == PhysicalBookStatus.LOANED) {
             throw new BusinessRuleException("Sem cópias disponíveis");
         }
 
-        //cria empréstimo
+        //Cria empréstimo
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setPhysicalBook(physicalBook);
@@ -69,7 +73,9 @@ public class RequestLoanService {
         loanRepository.save(loan);
         physicalBookRepository.save(physicalBook);
 
-        //Devolve na DTO
+        log.info("Empréstimo criado com sucesso! ID: {} para o utilizador: {}", loan.getId(), user.getName());
+
+        //Devolve na DTO o empréstimo
         return new ResponseLoanDTO(
                 loan.getId(),
                 loan.getUser().getName(),

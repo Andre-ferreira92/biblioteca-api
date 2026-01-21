@@ -39,7 +39,7 @@ public class Loan {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Loan loan = (Loan) o; // <--- Aqui dizes que o "o" é um Book
+        Loan loan = (Loan) o;
         return id != null && id.equals(loan.id);
     }
 

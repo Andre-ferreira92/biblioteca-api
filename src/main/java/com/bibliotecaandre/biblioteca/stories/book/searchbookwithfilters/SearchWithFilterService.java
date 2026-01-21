@@ -13,15 +13,13 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class SerchWithFilterService {
+public class SearchWithFilterService {
 
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
 
     public List<ResponseBookDTO> findAllBooks(Long categoryId) {
-
         List<Book> books;
-
         if (categoryId == null) {
 
             books = bookRepository.findAll();
