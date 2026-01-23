@@ -6,6 +6,7 @@ import com.bibliotecaandre.biblioteca.model.Roles;
 import com.bibliotecaandre.biblioteca.model.User;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class CreateUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseUserDTO createUser(RequestUserDTO dto) {
         User user = new User();
         user.setName(dto.name());

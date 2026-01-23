@@ -9,6 +9,7 @@ import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ public class UpdateBookService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseBookDTO updateBook(Long id, RequestUpdateBookDTO dto) {
         //Fazer alterações para gravar na DB
         log.info("A atualizar o livro com id {}", id);

@@ -13,6 +13,7 @@ import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class RequestLoanService {
     private final PhysicalBookRepository physicalBookRepository;
 
     @Transactional
+    @PreAuthorize("hasRole('USER')")
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
         log.info("Iniciando requisição de livro. UserID: {}, PhysicalBookID: {}", dto.userId(), dto.physicalBookId());
         User user = userRepository.findById(dto.userId())

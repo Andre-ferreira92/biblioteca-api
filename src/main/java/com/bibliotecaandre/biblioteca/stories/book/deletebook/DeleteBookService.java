@@ -9,6 +9,7 @@ import com.bibliotecaandre.biblioteca.repository.PhysicalBookRepository;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class DeleteBookService {
     private final PhysicalBookRepository physicalBookRepository;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);

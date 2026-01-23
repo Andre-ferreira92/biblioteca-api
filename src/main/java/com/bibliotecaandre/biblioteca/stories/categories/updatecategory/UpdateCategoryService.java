@@ -9,6 +9,7 @@ import com.bibliotecaandre.biblioteca.model.Category;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class UpdateCategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseCategoryDTO updateCategory(Long id, RequestCategoryDTO dto) {
         log.info("A atualizar a categoria com id: {}", id);
         Category category = categoryRepository.findById(id)

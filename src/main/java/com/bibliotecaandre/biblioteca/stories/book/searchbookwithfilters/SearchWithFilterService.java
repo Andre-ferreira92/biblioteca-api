@@ -7,6 +7,7 @@ import com.bibliotecaandre.biblioteca.model.Category;
 import com.bibliotecaandre.biblioteca.repository.BookRepository;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class SearchWithFilterService {
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ResponseBookDTO> findAllBooks(Long categoryId) {
         List<Book> books;
         if (categoryId == null) {

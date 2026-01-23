@@ -7,6 +7,7 @@ import com.bibliotecaandre.biblioteca.model.Category;
 import com.bibliotecaandre.biblioteca.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ public class InsertCategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseCategoryDTO insertCategory(RequestCategoryDTO dto) {
         // 1. Validar se o nome já existe
         log.info("A criar uma nova categoria");

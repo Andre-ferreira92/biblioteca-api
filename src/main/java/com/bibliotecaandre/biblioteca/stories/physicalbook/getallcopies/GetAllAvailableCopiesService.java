@@ -5,6 +5,7 @@ import com.bibliotecaandre.biblioteca.model.PhysicalBook;
 import com.bibliotecaandre.biblioteca.model.PhysicalBookStatus;
 import com.bibliotecaandre.biblioteca.repository.PhysicalBookRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class GetAllAvailableCopiesService {
 
     private final PhysicalBookRepository physicalBookRepository;
 
+    @PreAuthorize("hasRole('USER')")
     public List<ResponsePhysicalBookDTO> findAllAvailableBookCopies() {
         List<PhysicalBook> copies = physicalBookRepository.findByStatus(PhysicalBookStatus.AVAILABLE);
         return copies.stream()

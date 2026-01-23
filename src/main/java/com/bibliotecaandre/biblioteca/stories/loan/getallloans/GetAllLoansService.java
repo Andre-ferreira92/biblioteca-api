@@ -4,6 +4,8 @@ import com.bibliotecaandre.biblioteca.dto.ResponseLoanDTO;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,7 @@ public class GetAllLoansService {
 
     private final LoanRepository loanRepository;
 
+    @PreAuthorize("hasRole('USER')")
     public List<ResponseLoanDTO> getAllLoans() {
         List<Loan> loans = loanRepository.findAll();
 
