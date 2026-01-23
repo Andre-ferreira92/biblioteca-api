@@ -6,6 +6,8 @@ import com.bibliotecaandre.biblioteca.model.Roles;
 import com.bibliotecaandre.biblioteca.model.User;
 import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateUserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public ResponseUserDTO createUser(RequestUserDTO dto) {
         User user = new User();
         user.setName(dto.name());
         user.setEmail(dto.email());
-        user.setPassword(dto.password());
+        String encodedPassword = passwordEncoder.encode(dto.password());
+        user.setPassword(encodedPassword);
         user.setRole(Roles.USER);
 
         User savedUser = userRepository.save(user);
