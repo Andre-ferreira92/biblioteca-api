@@ -47,7 +47,8 @@ public class RequestLoanService {
 
         //Verifica se user quer requesitar o mesmo livro 2x
         Long bookId = physicalBook.getBook().getId();
-        boolean hasSameBook = loanRepository.existsByUserIdAndPhysicalBookIdAndLoanReturnIsNull(dto.userId(),physicalBook.getBook().getId());
+        boolean hasSameBook = loanRepository
+                .existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(dto.userId(),bookId);
         if (hasSameBook) {
             throw new BusinessRuleException("O utilizador ja requesitou este livro");
         }
