@@ -21,8 +21,8 @@ public class GetAllUsersService {
         return users.stream()
                 .map(user -> new ResponseUserDTO(
                         user.getId(),
-                        user.getEmail(),
                         user.getName(),
+                        user.getEmail(),
                         user.getRole(),
                         user.getCreatedAt()
                 ))

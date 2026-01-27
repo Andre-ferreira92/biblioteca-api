@@ -16,7 +16,7 @@ public class GetAllLoansService {
 
     private final LoanRepository loanRepository;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<ResponseLoanDTO> getAllLoans() {
         List<Loan> loans = loanRepository.findAll();
 

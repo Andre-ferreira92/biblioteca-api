@@ -28,13 +28,12 @@ public class CreateUserService {
         String encodedPassword = passwordEncoder.encode(dto.password());
         user.setPassword(encodedPassword);
         user.setRole(Roles.USER);
-
         User savedUser = userRepository.save(user);
 
         return new ResponseUserDTO(
                 savedUser.getId(),
-                savedUser.getEmail(),
                 savedUser.getName(),
+                savedUser.getEmail(),
                 savedUser.getRole(),
                 savedUser.getCreatedAt()
         );
