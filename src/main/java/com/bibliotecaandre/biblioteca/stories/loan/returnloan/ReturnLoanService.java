@@ -4,6 +4,7 @@ import com.bibliotecaandre.biblioteca.exceptions.ResourceNotFoundException;
 import com.bibliotecaandre.biblioteca.model.PhysicalBookStatus;
 import com.bibliotecaandre.biblioteca.model.Loan;
 import com.bibliotecaandre.biblioteca.repository.LoanRepository;
+import com.bibliotecaandre.biblioteca.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import java.util.List;
 public class ReturnLoanService {
 
     private final LoanRepository loanRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -46,7 +48,7 @@ public class ReturnLoanService {
             LocalDateTime blocked =  LocalDateTime.now().plusDays(15);
             log.warn("Utilizador {} bloqueado até {} por acumular {} atrasos", loan.getUser().getId(), blocked, totalDue);
             loan.getUser().setBlockedUntil(blocked);
-            loanRepository.save(loan);
+            userRepository.save(loan.getUser());
 
         }
     }
