@@ -52,5 +52,6 @@ class CreateUserServiceTest {
 
         verify(userRepository, times(1)).save(any(User.class));
         verify(passwordEncoder, times(1)).encode("12345678");
+        verifyNoMoreInteractions(passwordEncoder,userRepository);
     }
 }

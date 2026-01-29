@@ -66,5 +66,6 @@ class GetAllUsersServiceTest {
 
         assertEquals(0, result.size());
         verify(userRepository, times(1)).findAll();
+        verifyNoMoreInteractions(userRepository);
     }
 }

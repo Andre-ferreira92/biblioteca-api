@@ -20,7 +20,6 @@ public class CreateUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseUserDTO createUser(RequestUserDTO dto) {
         User user = new User();
         user.setName(dto.name());

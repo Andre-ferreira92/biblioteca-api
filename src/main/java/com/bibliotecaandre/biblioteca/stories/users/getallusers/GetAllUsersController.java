@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/user")
 @Tag(name = "Users", description = "Gestão dos Users")
-public class GetAllUserController {
+public class GetAllUsersController {
 
     private final GetAllUsersService getAllUsersService;
 

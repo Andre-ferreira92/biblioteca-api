@@ -1,6 +1,7 @@
 package com.bibliotecaandre.biblioteca.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,8 @@ public class PhysicalBook {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    @NotNull
     private Book book;
 
     @Column(nullable = false)
