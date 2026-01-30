@@ -40,7 +40,7 @@ public class SearchWithFilterService {
                         book.getTitle(),
                         book.getAuthor(),
                         book.getIsbn(),
-                        book.getCategory() != null ? book.getCategory().getName() : "Sem Categoria"
+                        book.getCategory() != null ? book.getCategory().getName() : "Category not defined"
                 ))
                 .toList();
     }
@@ -54,7 +54,7 @@ public class SearchWithFilterService {
                 book.getTitle(),
                 book.getAuthor(),
                 book.getIsbn(),
-                book.getCategory() != null ? book.getCategory().getName() : "Sem Categoria"
+                book.getCategory() != null ? book.getCategory().getName() : "Category not defined"
         );
     }
 }

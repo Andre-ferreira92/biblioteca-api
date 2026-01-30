@@ -22,10 +22,10 @@ public class InsertCategoryService {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseCategoryDTO insertCategory(RequestCategoryDTO dto) {
         // 1. Validar se o nome já existe
-        log.info("A criar uma nova categoria");
+        log.info("Creating a new category");
         if (categoryRepository.existsByNameIgnoreCase(dto.name())) {
-            log.warn("Esta categoria ja existe");
-            throw new BusinessRuleException("A categoria '" + dto.name() + "' já existe.");
+            log.warn("This category already exists");
+            throw new BusinessRuleException("Category" + dto.name() + " already exists");
         }
 
         // 2. Criar a nova entidade
@@ -33,7 +33,7 @@ public class InsertCategoryService {
         newCategory.setName(dto.name());
 
         Category savedCategory = categoryRepository.save(newCategory);
-        log.info("Uma nova categoria foi criada: {}", savedCategory.getName());
+        log.info("A new category has been created: {}", savedCategory.getName());
 
         // 4. Retornar o DTO (incluindo o ID que a DB gerou)
         return new ResponseCategoryDTO(

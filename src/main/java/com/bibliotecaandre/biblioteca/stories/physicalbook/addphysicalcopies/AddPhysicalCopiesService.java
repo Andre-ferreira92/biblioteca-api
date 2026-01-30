@@ -26,7 +26,7 @@ public class AddPhysicalCopiesService {
     @PreAuthorize("hasRole('ADMIN')")
     public void addBookCopies(Long id, int quantity) {
 
-        log.info("Inicio de processo de adicionar copias a livro do catalogo");
+        log.info("Starting process to add copies to book catalog");
         Book book = bookRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
         for (int i = 0; i < quantity; i++) {
@@ -37,6 +37,6 @@ public class AddPhysicalCopiesService {
             newCopy.setInventoryCode(book.getIsbn() + "-" + UUID.randomUUID().toString().substring(0, 8));
             physicalBookRepository.save(newCopy);
         }
-        log.info("Foram adicionadas: {} copias do livro com id: {}", quantity, book.getId());
+        log.info("Added {} copies of book with ID: {}", quantity, book.getId());
     }
 }

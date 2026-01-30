@@ -32,16 +32,16 @@ public class DeleteBookService {
         // Se houver cópias LOANED,nao pode apagar o título
         boolean hasActiveLoans = physicalBookRepository.existsByBookIdAndStatus(id, PhysicalBookStatus.LOANED);
         if (hasActiveLoans) {
-            log.warn("Este livro tem copias emprestadas não pode apagar");
-            throw new BusinessRuleException("Não é possível apagar o livro porque existem cópias emprestadas.");
+            log.warn("This book has active loans and cannot be deleted.");
+            throw new BusinessRuleException("Cannot delete the book because there are copies currently on loan.");
         }
         // Primeiro apagamos as cópias vinculadas a este livro
         List<PhysicalBook> copies = physicalBookRepository.findByBookId(id);
         physicalBookRepository.deleteAll(copies);
-        log.warn("Removidas copias de livro com id {} ", id);
+        log.warn("Removed copies for book with ID {} ", id);
 
         //apagamos o título do catálogo
         bookRepository.delete(book);
-        log.info("livro com id {} removido com sucesso ", id);
+        log.info("Book with ID {} successfully removed ", id);
     }
 }

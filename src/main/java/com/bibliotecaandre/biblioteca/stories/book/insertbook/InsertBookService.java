@@ -25,9 +25,9 @@ public class InsertBookService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseBookDTO createBook(RequestBookDTO dto) {
-        log.info("A criar um novo livro no catelogo da biblioteca");
+        log.info("Creating a new book in the library catalog");
         if (bookRepository.existsByIsbn(dto.isbn())) {
-            log.warn("Este isbn ja existe {}", dto.isbn());
+            log.warn("This ISBN already exists: {}", dto.isbn());
             throw new IsbnAlreadyExistsException();
         }
 
@@ -41,7 +41,7 @@ public class InsertBookService {
         book.setCategory(category);
 
         Book savedBook = bookRepository.save(book);
-        log.info("Novo livro criado com sucesso: ID {} - Título: {}", savedBook.getId(), savedBook.getTitle());
+        log.info("New book created successfully: ID {} - Title: {}", savedBook.getId(), savedBook.getTitle());
         return new ResponseBookDTO(
                 savedBook.getId(),
                 savedBook.getTitle(),

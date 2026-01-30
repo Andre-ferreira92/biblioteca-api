@@ -31,15 +31,15 @@ public class RequestLoanService {
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
-        log.info("Iniciando requisição de livro. UserID: {}, PhysicalBookID: {}", dto.userId(), dto.physicalBookId());
+        log.info("Initiating book loan request. UserID: {}, PhysicalBookID: {}", dto.userId(), dto.physicalBookId());
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(ResourceNotFoundException::new);
 
 
         // Impede o empréstimo se o utilizador ainda estiver dentro do período de suspensão
         if (user.getBlockedUntil() != null && user.getBlockedUntil().isAfter(LocalDateTime.now())) {
-            log.warn("Pedido negado: Utilizador {} suspenso até {}", user.getId(), user.getBlockedUntil());
-            throw new BusinessRuleException("Pedido negado. O utilizador está suspenso até: " + user.getBlockedUntil());
+            log.warn("Request denied: User {} is suspended until {}", user.getId(), user.getBlockedUntil());
+            throw new BusinessRuleException("Request denied. User is suspended until: " + user.getBlockedUntil());
         }
 
         PhysicalBook physicalBook = physicalBookRepository.findById(dto.physicalBookId())
@@ -50,19 +50,19 @@ public class RequestLoanService {
         boolean hasSameBook = loanRepository
                 .existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(dto.userId(),bookId);
         if (hasSameBook) {
-            throw new BusinessRuleException("O utilizador ja requesitou este livro");
+            throw new BusinessRuleException("The user has already requested this book");
         }
 
         //Verifica se user pode ter mais emprestimos
         int activeLoan = loanRepository.countByUserIdAndLoanReturnIsNull(dto.userId());
         if (activeLoan >= 3) {
-            log.warn("Limite atingido: Utilizador {} já possui {} empréstimos ativos", user.getId(), activeLoan);
-            throw new BusinessRuleException("O utilizador já tem 3 empréstimos");
+            log.warn("Limit reached: User {} already has {} active loans", user.getId(), activeLoan);
+            throw new BusinessRuleException("User has already reached the limit of 3 loans");
         }
 
         //Muda o Status para LOANED
         if (physicalBook.getStatus() == PhysicalBookStatus.LOANED) {
-            throw new BusinessRuleException("Sem cópias disponíveis");
+            throw new BusinessRuleException("No copies available");
         }
 
         //Cria empréstimo
@@ -76,7 +76,7 @@ public class RequestLoanService {
         loanRepository.save(loan);
         physicalBookRepository.save(physicalBook);
 
-        log.info("Empréstimo criado com sucesso! ID: {} para o utilizador: {}", loan.getId(), user.getName());
+        log.info("Loan created successfully! ID: {} for user: {}", loan.getId(), user.getName());
 
         //Devolve na DTO o empréstimo
         return new ResponseLoanDTO(
@@ -85,6 +85,6 @@ public class RequestLoanService {
                 loan.getPhysicalBook().getBook().getTitle(),
                 loan.getLoanDue(),
                 loan.getLoanReturn(),
-                (loan.getLoanReturn() == null) ? "ATIVO" : "ENTREGUE");
+                (loan.getLoanReturn() == null) ? "ACTIVE" : "RETURNED");
     }
 }

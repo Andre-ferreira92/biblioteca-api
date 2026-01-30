@@ -25,7 +25,7 @@ public class UpdateBookService {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseBookDTO updateBook(Long id, RequestUpdateBookDTO dto) {
         //Fazer alterações para gravar na DB
-        log.info("A atualizar o livro com id {}", id);
+        log.info("Updating book with ID {}", id);
         Book book = bookRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -38,7 +38,7 @@ public class UpdateBookService {
 
         //Gravar na DB
         Book updatedBook = bookRepository.save(book);
-        log.info("O update do book com id {} foi gravado com sucesso", id);
+        log.info("Book update with ID {} successfully saved", id);
 
         //Passar para a resposta dto
         return new ResponseBookDTO(

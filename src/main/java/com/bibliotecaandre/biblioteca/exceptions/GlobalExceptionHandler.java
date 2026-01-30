@@ -17,25 +17,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IsbnAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleIsbn(IsbnAlreadyExistsException ex) {
-        log.warn("Tentativa de criação com ISBN duplicado: {}", ex.getMessage());
+        log.warn("Attempted to create with duplicate ISBN: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponseDTO(ex.getMessage()));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleBookNotFound(ResourceNotFoundException ex) {
-        log.warn("Recurso não encontrado: {}", ex.getMessage());
+        log.warn("Resource not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponseDTO(ex.getMessage()));
     }
 
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<ErrorResponseDTO> handleBusinessRule(BusinessRuleException ex) {
-        log.warn("Regra de negócio violada: {}", ex.getMessage());
+        log.warn("Business rule violation: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ErrorValidationDTO>> handleValidationError(MethodArgumentNotValidException ex) {
-        log.warn("Erro de validação no DTO");
+        log.warn("Method argument validation failed");
 
         List<ErrorValidationDTO> listaDeErros = ex.getFieldErrors().stream()
                 .map(erro -> new ErrorValidationDTO(erro.getField(), erro.getDefaultMessage()))

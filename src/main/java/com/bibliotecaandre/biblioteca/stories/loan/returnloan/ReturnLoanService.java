@@ -27,7 +27,7 @@ public class ReturnLoanService {
     public void returnLoan(Long id) {
 
         //Encontrar id do loan
-        log.info("Inicio de processo de devolução de livro");
+        log.info("Starting book return process");
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -35,7 +35,7 @@ public class ReturnLoanService {
         loan.setLoanReturn(LocalDateTime.now());
         loan.getPhysicalBook().setStatus(PhysicalBookStatus.AVAILABLE);
         loanRepository.save(loan);
-        log.info("Processo de devolução de livro com id: {} finalizado", loan.getId());
+        log.info("Book return process for ID: {} completed", loan.getId());
 
         //Verificar se user tem atrasos e se tiver aplicar bloqueio
         List<Loan> historicLoans = loanRepository.findByUserIdAndLoanReturnIsNotNull(loan.getUser().getId());
@@ -46,7 +46,7 @@ public class ReturnLoanService {
 
         if (totalDue >= 2) {
             LocalDateTime blocked =  LocalDateTime.now().plusDays(15);
-            log.warn("Utilizador {} bloqueado até {} por acumular {} atrasos", loan.getUser().getId(), blocked, totalDue);
+            log.warn("User {} blocked until {} due to {} overdue returns", loan.getUser().getId(), blocked, totalDue);
             loan.getUser().setBlockedUntil(blocked);
             userRepository.save(loan.getUser());
 

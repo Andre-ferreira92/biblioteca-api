@@ -23,20 +23,20 @@ public class UpdateCategoryService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseCategoryDTO updateCategory(Long id, RequestCategoryDTO dto) {
-        log.info("A atualizar a categoria com id: {}", id);
+        log.info("Updating category with ID: {}", id);
         Category category = categoryRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
         if (!category.getName().equalsIgnoreCase(dto.name())) {
             if (categoryRepository.existsByNameIgnoreCase(dto.name())) {
-                log.warn("Esta categoria ja existe");
-                throw new BusinessRuleException("Categoria com esse nome ja existe");
+                log.warn("Category already exists");
+                throw new BusinessRuleException("A category with this name already exists");
             }
         }
         category.setName(dto.name());
 
         categoryRepository.save(category);
-        log.info("A categoria com id {} atualizada", id);
+        log.info("Category with ID {} successfully updated", id);
 
         return new ResponseCategoryDTO(
                 category.getId(),
