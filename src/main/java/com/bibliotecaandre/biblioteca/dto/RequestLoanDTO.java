@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record RequestLoanDTO(
 
-        @NotNull(message = "O id do user é obrigatório")
+        @NotNull(message = "User ID is required")
         Long userId,
 
-        @NotNull(message = "O id do PhysicalBook é obrigatório")
+        @NotNull(message = "Physical Book ID is required")
         Long physicalBookId
 ) { }

@@ -31,7 +31,7 @@ public class EmailService {
 
         //Para cada empréstimo atrasado cria a msg
         lateLoans.forEach(loan -> {
-            System.out.println("AVISO: O utilizador " + loan.getUser().getName() + " está atrasado a devolver o livro " + loan.getPhysicalBook().getBook().getTitle());
+            System.out.println("WARNING: User {} is overdue returning the book: {}" + loan.getPhysicalBook().getBook().getTitle());
         });
     }
 }

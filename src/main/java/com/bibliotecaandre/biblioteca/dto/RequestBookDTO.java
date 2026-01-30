@@ -5,16 +5,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record RequestBookDTO(
-        @NotBlank(message = "O título do livro é obrigatório")
+        @NotBlank(message = "Book title is required")
         String title,
 
-        @NotBlank(message = "O autor do livro é obrigatório")
+        @NotBlank(message = "Book author is required")
         String author,
 
-        @NotBlank(message = "O campo ISBN é obrigatório")
-        @Size(min = 2, max = 10, message = "O ISBN deve conter entre 2 e 10 caracteres")
+        @NotBlank(message = "ISBN field is required")
+        @Size(min = 2, max = 10, message = "ISBN must be between 2 and 10 characters")
         String isbn,
 
-        @NotNull(message = "A categoria do livro é obrigatória")
+        @NotNull(message = "Book category is required")
         Long categoryId
 ) { }

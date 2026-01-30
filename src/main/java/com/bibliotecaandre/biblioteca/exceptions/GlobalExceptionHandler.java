@@ -37,10 +37,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ErrorValidationDTO>> handleValidationError(MethodArgumentNotValidException ex) {
         log.warn("Method argument validation failed");
 
-        List<ErrorValidationDTO> listaDeErros = ex.getFieldErrors().stream()
-                .map(erro -> new ErrorValidationDTO(erro.getField(), erro.getDefaultMessage()))
+        List<ErrorValidationDTO> errorList = ex.getFieldErrors().stream()
+                .map(error -> new ErrorValidationDTO(error.getField(), error.getDefaultMessage()))
                 .toList();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(listaDeErros);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
     }
 }
