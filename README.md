@@ -1,7 +1,7 @@
 Esta é uma API RESTful completa para a gestão de uma biblioteca, focada em regras de negócio complexas, segurança e integridade de dados. O sistema permite o controlo total de utilizadores, empréstimos e inventário físico.
 
-Status do Projeto: Concluído / Estável ✅
-🛠️ Tecnologias
+Status do Projeto: Concluído
+Tecnologias
 
     Java 21 / Spring Boot
 
@@ -17,7 +17,7 @@ Status do Projeto: Concluído / Estável ✅
 
     Swagger/OpenAPI: Documentação interativa dos endpoints.
 
-⚙️ Funcionalidades Principais
+Funcionalidades Principais
 
 Gestão de Inventário
 
@@ -43,7 +43,7 @@ Fluxo de Empréstimos (Regras de Negócio)
 
     Validações: Verificação em tempo real da disponibilidade de cópias.
 
-🛡️ Qualidade de Código e Testes
+Qualidade de Código e Testes
 
     Testes Unitários: Cobertura total da camada de Service.
 
