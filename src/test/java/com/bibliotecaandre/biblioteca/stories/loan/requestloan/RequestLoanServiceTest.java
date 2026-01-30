@@ -70,7 +70,7 @@ class RequestLoanServiceTest {
         assertEquals("User", responseLoanDTO.userName());
         assertEquals("Book", responseLoanDTO.bookTitle());
         assertNull(responseLoanDTO.returnDate());
-        assertEquals("ATIVO", responseLoanDTO.Status());
+        assertEquals("ACTIVE", responseLoanDTO.Status());
 
         verify(userRepository, times(1)).findById(1L);
         verify(physicalBookRepository, times(1)).findById(1L);
