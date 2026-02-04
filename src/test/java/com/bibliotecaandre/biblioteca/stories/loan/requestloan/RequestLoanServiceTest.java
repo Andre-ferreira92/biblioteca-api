@@ -99,12 +99,22 @@ class RequestLoanServiceTest {
         user.setName("User");
         user.setBlockedUntil(LocalDateTime.now().plusDays(1));
 
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("Book");
+
+        PhysicalBook physicalBook = new PhysicalBook();
+        physicalBook.setId(1L);
+        physicalBook.setBook(book);
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(physicalBookRepository.findById(1L)).thenReturn(Optional.of(physicalBook));  // ✅ Mock completo
 
         assertThrows(BusinessRuleException.class, () -> requestLoanService.createLoan(new RequestLoanDTO(1L, 1L)));
 
         verify(userRepository, times(1)).findById(1L);
-        verifyNoMoreInteractions(userRepository, physicalBookRepository, loanRepository);
+        verify(physicalBookRepository, times(1)).findById(1L);
+        verifyNoMoreInteractions(loanRepository, physicalBookRepository, userRepository);
     }
 
     @Test
@@ -151,7 +161,7 @@ class RequestLoanServiceTest {
     }
 
     @Test
-    void createLoanWhenUserHasMoreThanTwoLoansThrowsException() {
+    void createLoanWhenUserHasThreeLoansThrowsException() {
 
         User user = new User();
         user.setId(1L);
@@ -168,15 +178,15 @@ class RequestLoanServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(physicalBookRepository.findById(1L)).thenReturn(Optional.of(physicalBook));
         when(loanRepository.existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(1L, 1L)).thenReturn(false);
-        when(loanRepository.countByUserIdAndLoanReturnIsNull(1L)).thenReturn(3);
+        when(loanRepository.countByUserIdAndLoanReturnIsNull(1L)).thenReturn(3);  // ✅ 3 deve falhar
 
         assertThrows(BusinessRuleException.class, () -> requestLoanService.createLoan(new RequestLoanDTO(1L, 1L)));
 
-        verify(loanRepository, times(1)).countByUserIdAndLoanReturnIsNull(1L);
-        verify(loanRepository, times(1)).existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(1L, 1L);
         verify(userRepository, times(1)).findById(1L);
         verify(physicalBookRepository, times(1)).findById(1L);
-        verifyNoMoreInteractions(loanRepository, userRepository, physicalBookRepository);
+        verify(loanRepository, times(1)).existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(1L, 1L);
+        verify(loanRepository, times(1)).countByUserIdAndLoanReturnIsNull(1L);
+        verifyNoMoreInteractions(userRepository, physicalBookRepository, loanRepository);
     }
 }
 

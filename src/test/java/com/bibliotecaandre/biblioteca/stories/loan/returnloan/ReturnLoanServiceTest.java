@@ -115,6 +115,7 @@ class ReturnLoanServiceTest {
         when(loanRepository.findById(1L)).thenReturn(Optional.of(currentLoan));
         when(loanRepository.save(any(Loan.class))).thenReturn(currentLoan);
         when(loanRepository.findByUserIdAndLoanReturnIsNotNull(1L)).thenReturn(List.of(delayedLoan1, delayedLoan2));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));  // ✅ Adicionar este mock
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         returnLoanService.returnLoan(1L);
@@ -122,6 +123,7 @@ class ReturnLoanServiceTest {
         verify(loanRepository, times(1)).findById(1L);
         verify(loanRepository, times(1)).save(any(Loan.class));
         verify(loanRepository, times(1)).findByUserIdAndLoanReturnIsNotNull(1L);
+        verify(userRepository, times(1)).findById(1L);  // ✅ Adicionar verificação
         verify(userRepository, times(1)).save(any(User.class));
         verifyNoMoreInteractions(loanRepository, userRepository);
     }

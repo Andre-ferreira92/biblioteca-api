@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,16 +34,16 @@ class AddPhysicalCopiesServiceTest {
         book.setIsbn("ISBN123");
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-        when(physicalBookRepository.save(any(PhysicalBook.class))).thenAnswer(invocation -> {
-            PhysicalBook saved = invocation.getArgument(0);
-            saved.setId(1L);
+        when(physicalBookRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<PhysicalBook> saved = invocation.getArgument(0);
+            saved.forEach(copy -> copy.setId(1L));
             return saved;
         });
 
         addPhysicalCopiesService.addBookCopies(1L, 2);
 
         verify(bookRepository, times(1)).findById(1L);
-        verify(physicalBookRepository, times(2)).save(any(PhysicalBook.class));
+        verify(physicalBookRepository, times(1)).saveAll(anyList());  // ✅ Corrigido
         verifyNoMoreInteractions(bookRepository, physicalBookRepository);
     }
 
