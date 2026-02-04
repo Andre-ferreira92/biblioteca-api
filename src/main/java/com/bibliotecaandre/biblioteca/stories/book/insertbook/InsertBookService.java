@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class InsertBookService {
 
+
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
 
