@@ -16,7 +16,7 @@ public class GetAllAvailableCopiesService {
 
     private final PhysicalBookRepository physicalBookRepository;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<ResponsePhysicalBookDTO> findAllAvailableBookCopies() {
         List<PhysicalBook> copies = physicalBookRepository.findByStatus(PhysicalBookStatus.AVAILABLE);
         return copies.stream()
