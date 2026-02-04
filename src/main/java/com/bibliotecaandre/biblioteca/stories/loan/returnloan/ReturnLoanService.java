@@ -22,34 +22,56 @@ public class ReturnLoanService {
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
 
+    // Constants para evitar hardcoded values
+    private static final int OVERDUE_LIMIT_FOR_SUSPENSION = 2;
+    private static final int SUSPENSION_DAYS = 15;
+
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public void returnLoan(Long id) {
-
-        //Encontrar id do loan
         log.info("Starting book return process");
-        Loan loan = loanRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
 
-        //alterar estado do loan e add data de retorno
+        Loan loan = findLoanById(id);
+        processLoanReturn(loan);
+        checkAndApplyUserSuspension(loan.getUser().getId());
+
+        log.info("Book return process for ID: {} completed", loan.getId());
+    }
+
+    private Loan findLoanById(Long id) {
+        return loanRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private void processLoanReturn(Loan loan) {
         loan.setLoanReturn(LocalDateTime.now());
         loan.getPhysicalBook().setStatus(PhysicalBookStatus.AVAILABLE);
         loanRepository.save(loan);
-        log.info("Book return process for ID: {} completed", loan.getId());
+    }
 
-        //Verificar se user tem atrasos e se tiver aplicar bloqueio
-        List<Loan> historicLoans = loanRepository.findByUserIdAndLoanReturnIsNotNull(loan.getUser().getId());
+    private void checkAndApplyUserSuspension(Long userId) {
+        List<Loan> historicLoans = loanRepository.findByUserIdAndLoanReturnIsNotNull(userId);
+        long overdueCount = countOverdueLoans(historicLoans);
 
-        long totalDue = historicLoans.stream()
-                .filter(loans -> loans.getLoanReturn().isAfter(loans.getLoanDue()))
-                .count();
-
-        if (totalDue >= 2) {
-            LocalDateTime blocked =  LocalDateTime.now().plusDays(15);
-            log.warn("User {} blocked until {} due to {} overdue returns", loan.getUser().getId(), blocked, totalDue);
-            loan.getUser().setBlockedUntil(blocked);
-            userRepository.save(loan.getUser());
-
+        if (overdueCount >= OVERDUE_LIMIT_FOR_SUSPENSION) {
+            applyUserSuspension(userId, overdueCount);
         }
+    }
+
+    private long countOverdueLoans(List<Loan> loans) {
+        return loans.stream()
+                .filter(loan -> loan.getLoanReturn().isAfter(loan.getLoanDue()))
+                .count();
+    }
+
+    private void applyUserSuspension(Long userId, long overdueCount) {
+        LocalDateTime blockedUntil = LocalDateTime.now().plusDays(SUSPENSION_DAYS);
+        log.warn("User {} blocked until {} due to {} overdue returns",
+                userId, blockedUntil, overdueCount);
+
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setBlockedUntil(blockedUntil);
+            userRepository.save(user);
+        });
     }
 }

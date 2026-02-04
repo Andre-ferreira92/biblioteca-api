@@ -28,63 +28,94 @@ public class RequestLoanService {
     private final UserRepository userRepository;
     private final PhysicalBookRepository physicalBookRepository;
 
+    private static final int MAX_ACTIVE_LOANS_PER_USER = 3;
+    private static final int LOAN_DURATION_DAYS = 30;
+
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public ResponseLoanDTO createLoan(RequestLoanDTO dto) {
-        log.info("Initiating book loan request. UserID: {}, PhysicalBookID: {}", dto.userId(), dto.physicalBookId());
-        User user = userRepository.findById(dto.userId())
+        log.info("Initiating book loan request. UserID: {}, PhysicalBookID: {}",
+                dto.userId(), dto.physicalBookId());
+
+        User user = findUserById(dto.userId());
+        PhysicalBook physicalBook = findPhysicalBookById(dto.physicalBookId());
+
+        validateUserSuspension(user);
+        validateDuplicateBookLoan(dto.userId(), physicalBook.getBook().getId());
+        validateUserLoanLimit(dto.userId());
+        validateBookAvailability(physicalBook);
+
+        Loan loan = createLoanEntity(user, physicalBook);
+
+        saveLoanAndBook(loan, physicalBook);
+
+        log.info("Loan created successfully! ID: {} for user: {}", loan.getId(), user.getName());
+
+        return buildLoanResponseDTO(loan);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(ResourceNotFoundException::new);
+    }
 
+    private PhysicalBook findPhysicalBookById(Long physicalBookId) {
+        return physicalBookRepository.findById(physicalBookId)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
 
-        // Impede o empréstimo se o utilizador ainda estiver dentro do período de suspensão
+    private void validateUserSuspension(User user) {
         if (user.getBlockedUntil() != null && user.getBlockedUntil().isAfter(LocalDateTime.now())) {
             log.warn("Request denied: User {} is suspended until {}", user.getId(), user.getBlockedUntil());
             throw new BusinessRuleException("Request denied. User is suspended until: " + user.getBlockedUntil());
         }
+    }
 
-        PhysicalBook physicalBook = physicalBookRepository.findById(dto.physicalBookId())
-                .orElseThrow(ResourceNotFoundException::new);
-
-        //Verifica se user quer requesitar o mesmo livro 2x
-        Long bookId = physicalBook.getBook().getId();
+    private void validateDuplicateBookLoan(Long userId, Long bookId) {
         boolean hasSameBook = loanRepository
-                .existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(dto.userId(),bookId);
+                .existsByUserIdAndPhysicalBook_Book_IdAndLoanReturnIsNull(userId, bookId);
         if (hasSameBook) {
             throw new BusinessRuleException("The user has already requested this book");
         }
+    }
 
-        //Verifica se user pode ter mais emprestimos
-        int activeLoan = loanRepository.countByUserIdAndLoanReturnIsNull(dto.userId());
-        if (activeLoan >= 3) {
-            log.warn("Limit reached: User {} already has {} active loans", user.getId(), activeLoan);
-            throw new BusinessRuleException("User has already reached the limit of 3 loans");
+    private void validateUserLoanLimit(Long userId) {
+        int activeLoans = loanRepository.countByUserIdAndLoanReturnIsNull(userId);
+        if (activeLoans >= MAX_ACTIVE_LOANS_PER_USER) {
+            log.warn("Limit reached: User {} already has {} active loans", userId, activeLoans);
+            throw new BusinessRuleException("User has already reached the limit of " + MAX_ACTIVE_LOANS_PER_USER + " loans");
         }
+    }
 
-        //Muda o Status para LOANED
+    private void validateBookAvailability(PhysicalBook physicalBook) {
         if (physicalBook.getStatus() == PhysicalBookStatus.LOANED) {
             throw new BusinessRuleException("No copies available");
         }
+    }
 
-        //Cria empréstimo
+    private Loan createLoanEntity(User user, PhysicalBook physicalBook) {
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setPhysicalBook(physicalBook);
         loan.setLoanDate(LocalDateTime.now());
-        loan.setLoanDue(LocalDateTime.now().plusDays(30));
+        loan.setLoanDue(LocalDateTime.now().plusDays(LOAN_DURATION_DAYS));
         physicalBook.setStatus(PhysicalBookStatus.LOANED);
+        return loan;
+    }
 
+    private void saveLoanAndBook(Loan loan, PhysicalBook physicalBook) {
         loanRepository.save(loan);
         physicalBookRepository.save(physicalBook);
+    }
 
-        log.info("Loan created successfully! ID: {} for user: {}", loan.getId(), user.getName());
-
-        //Devolve na DTO o empréstimo
+    private ResponseLoanDTO buildLoanResponseDTO(Loan loan) {
         return new ResponseLoanDTO(
                 loan.getId(),
                 loan.getUser().getName(),
                 loan.getPhysicalBook().getBook().getTitle(),
                 loan.getLoanDue(),
                 loan.getLoanReturn(),
-                (loan.getLoanReturn() == null) ? "ACTIVE" : "RETURNED");
+                (loan.getLoanReturn() == null) ? "ACTIVE" : "RETURNED"
+        );
     }
 }
