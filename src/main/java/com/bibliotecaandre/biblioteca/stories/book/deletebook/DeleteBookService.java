@@ -26,22 +26,34 @@ public class DeleteBookService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteBook(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+        Book book = findBookById(id);
+        validateNoActiveLoans(id);
+        deletePhysicalCopies(id);
+        deleteBookFromCatalog(book);
 
-        // Se houver cópias LOANED,nao pode apagar o título
-        boolean hasActiveLoans = physicalBookRepository.existsByBookIdAndStatus(id, PhysicalBookStatus.LOANED);
+        log.info("Book with ID {} successfully removed", id);
+    }
+
+    private Book findBookById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private void validateNoActiveLoans(Long bookId) {
+        boolean hasActiveLoans = physicalBookRepository.existsByBookIdAndStatus(bookId, PhysicalBookStatus.LOANED);
         if (hasActiveLoans) {
             log.warn("This book has active loans and cannot be deleted.");
             throw new BusinessRuleException("Cannot delete the book because there are copies currently on loan.");
         }
-        // Primeiro apagamos as cópias vinculadas a este livro
-        List<PhysicalBook> copies = physicalBookRepository.findByBookId(id);
-        physicalBookRepository.deleteAll(copies);
-        log.warn("Removed copies for book with ID {} ", id);
+    }
 
-        //apagamos o título do catálogo
+    private void deletePhysicalCopies(Long bookId) {
+        List<PhysicalBook> copies = physicalBookRepository.findByBookId(bookId);
+        physicalBookRepository.deleteAll(copies);
+        log.warn("Removed copies for book with ID {}", bookId);
+    }
+
+    private void deleteBookFromCatalog(Book book) {
         bookRepository.delete(book);
-        log.info("Book with ID {} successfully removed ", id);
     }
 }

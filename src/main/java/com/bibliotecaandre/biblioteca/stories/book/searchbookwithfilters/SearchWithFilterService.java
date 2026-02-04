@@ -21,41 +21,50 @@ public class SearchWithFilterService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<ResponseBookDTO> findAllBooks(Long categoryId) {
-        List<Book> books;
-        if (categoryId == null) {
-
-            books = bookRepository.findAll();
-        }
-        else{
-
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(ResourceNotFoundException::new);
-
-            books = bookRepository.findByCategoryId(categoryId);
-
-        }
+        List<Book> books = searchBooksByCategory(categoryId);
         return books.stream()
-                .map(book -> new ResponseBookDTO(
-                        book.getId(),
-                        book.getTitle(),
-                        book.getAuthor(),
-                        book.getIsbn(),
-                        book.getCategory() != null ? book.getCategory().getName() : "Category not defined"
-                ))
+                .map(this::buildBookResponseDTO)
                 .toList();
     }
 
     public ResponseBookDTO findBookById(Long id) {
-        Book book = bookRepository.findById(id)
-                    .orElseThrow(ResourceNotFoundException::new);
+        Book book = findBookEntityById(id);
+        return buildBookResponseDTO(book);
+    }
 
+    private List<Book> searchBooksByCategory(Long categoryId) {
+        if (categoryId == null) {
+            return bookRepository.findAll();
+        } else {
+            validateCategoryExists(categoryId);
+            return bookRepository.findByCategoryId(categoryId);
+        }
+    }
+
+    private void validateCategoryExists(Long categoryId) {
+        categoryRepository.findById(categoryId)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private Book findBookEntityById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private ResponseBookDTO buildBookResponseDTO(Book book) {
         return new ResponseBookDTO(
                 book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
                 book.getIsbn(),
-                book.getCategory() != null ? book.getCategory().getName() : "Category not defined"
+                getCategoryName(book)
         );
+    }
+
+    private String getCategoryName(Book book) {
+        return book.getCategory() != null ?
+                book.getCategory().getName() :
+                "Category not defined";
     }
 }
 

@@ -21,24 +21,33 @@ public class InsertCategoryService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseCategoryDTO insertCategory(RequestCategoryDTO dto) {
-        // 1. Validar se o nome já existe
         log.info("Creating a new category");
-        if (categoryRepository.existsByNameIgnoreCase(dto.name())) {
-            log.warn("This category already exists");
-            throw new BusinessRuleException("Category" + dto.name() + " already exists");
-        }
 
-        // 2. Criar a nova entidade
-        Category newCategory = new Category();
-        newCategory.setName(dto.name());
-
+        validateCategoryNameExists(dto.name());
+        Category newCategory = createCategoryEntity(dto.name());
         Category savedCategory = categoryRepository.save(newCategory);
-        log.info("A new category has been created: {}", savedCategory.getName());
 
-        // 4. Retornar o DTO (incluindo o ID que a DB gerou)
+        log.info("A new category has been created: {}", savedCategory.getName());
+        return buildCategoryResponseDTO(savedCategory);
+    }
+
+    private void validateCategoryNameExists(String name) {
+        if (categoryRepository.existsByNameIgnoreCase(name)) {
+            log.warn("This category already exists: {}", name);
+            throw new BusinessRuleException("Category " + name + " already exists");
+        }
+    }
+
+    private Category createCategoryEntity(String name) {
+        Category category = new Category();
+        category.setName(name);
+        return category;
+    }
+
+    private ResponseCategoryDTO buildCategoryResponseDTO(Category category) {
         return new ResponseCategoryDTO(
-                savedCategory.getId(),
-                savedCategory.getName()
+                category.getId(),
+                category.getName()
         );
     }
 }

@@ -24,29 +24,44 @@ public class UpdateBookService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseBookDTO updateBook(Long id, RequestUpdateBookDTO dto) {
-        //Fazer alterações para gravar na DB
         log.info("Updating book with ID {}", id);
-        Book book = bookRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
 
-        Category category = categoryRepository.findById(dto.categoryId())
-                .orElseThrow(ResourceNotFoundException::new);
+        Book book = findBookById(id);
+        Category category = findCategoryById(dto.categoryId());
+        updateBookData(book, dto, category);
+        Book updatedBook = saveBook(book);
 
+        log.info("Book update with ID {} successfully saved", id);
+        return buildBookResponseDTO(updatedBook);
+    }
+
+    private Book findBookById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private Category findCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private void updateBookData(Book book, RequestUpdateBookDTO dto, Category category) {
         book.setTitle(dto.title());
         book.setAuthor(dto.author());
         book.setCategory(category);
+    }
 
-        //Gravar na DB
-        Book updatedBook = bookRepository.save(book);
-        log.info("Book update with ID {} successfully saved", id);
+    private Book saveBook(Book book) {
+        return bookRepository.save(book);
+    }
 
-        //Passar para a resposta dto
+    private ResponseBookDTO buildBookResponseDTO(Book book) {
         return new ResponseBookDTO(
-                updatedBook.getId(),
-                updatedBook.getTitle(),
-                updatedBook.getAuthor(),
-                updatedBook.getIsbn(),
-                updatedBook.getCategory().getName()
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor(),
+                book.getIsbn(),
+                book.getCategory().getName()
         );
     }
 }
